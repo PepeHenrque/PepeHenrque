@@ -7,14 +7,13 @@ Também gosto de eletrônica e Arduino como forma de explorar a computação na 
 
 De forma geral, sou movido por curiosidade: gosto de aprender coisas novas e de compartilhar o que aprendo.
 
-Atualmente estudando C e Java, com experiência prática em HTML, CSS e JavaScript.
-Também venho trabalhando com ferramentas de DevOps como Docker e Terraform.
+Estou começando agora com C e Java, e tenho me aprofundado em ferramentas de infraestrutura como código (IaC), como Terraform, Vagrant e Jenkins.
 
 Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum AI.
 
 ## Tecnologias
 
-[![Tecnologias](https://skillicons.dev/icons?i=java,c,html,css,js,docker,terraform,git,github)](https://skillicons.dev)
+[![Tecnologias](https://skillicons.dev/icons?i=java,c,terraform,vagrant,jenkins,git,github,arduino)](https://skillicons.dev)
 
 ## Estatísticas
 
