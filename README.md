@@ -18,7 +18,7 @@ Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum A
 
 ## Estatísticas
 
-![Stats](https://SEU-LINK-DA-VERCEL.vercel.app/api?username=PepeHenrque&show_icons=true&theme=default&hide_border=true)
+![Stats](https://github-readme-stats-eight-theta.vercel.app/api?username=PepeHenrque&show_icons=true&theme=default&hide_border=true)
 
 ## Contribuições
 
