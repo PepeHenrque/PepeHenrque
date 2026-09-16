@@ -9,7 +9,7 @@ De forma geral, sou movido por curiosidade: gosto de aprender coisas novas e de 
 
 Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprofundando em ferramentas de infraestrutura como código (IaC), como Terraform, Vagrant e Jenkins.
 
-Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum AI.
+🏆Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum AI.
 
 ## Tecnologias
 
