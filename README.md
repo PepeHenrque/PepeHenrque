@@ -7,13 +7,13 @@ Também gosto de eletrônica e Arduino como forma de explorar a computação na 
 
 De forma geral, sou movido por curiosidade: gosto de aprender coisas novas e de compartilhar o que aprendo.
 
-Estou começando agora com C e Java, e tenho me aprofundado em ferramentas de infraestrutura como código (IaC), como Terraform, Vagrant e Jenkins.
+Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprofundando em ferramentas de infraestrutura como código (IaC), como Terraform, Vagrant e Jenkins.
 
 Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum AI.
 
 ## Tecnologias
 
-[![Tecnologias](https://skillicons.dev/icons?i=java,c,terraform,vagrant,jenkins,git,github,arduino)](https://skillicons.dev)
+[![Tecnologias](https://skillicons.dev/icons?i=c,java,py,html,arduino,terraform,jenkins,git,github)](https://skillicons.dev)
 
 ## Estatísticas
 
