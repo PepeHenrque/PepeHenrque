@@ -1,6 +1,11 @@
 # Pedro Henrique
 
-Graduando em Ciência da Computação.
+Me chamo Pedro Henrique Gomes de Lima, atualmente no quarto período de Ciência da Computação.
+
+Tenho interesse particular pela teoria por trás da computação, além de matemática e filosofia.
+Também gosto de eletrônica e Arduino como forma de explorar a computação na prática, fora da tela.
+
+De forma geral, sou movido por curiosidade: gosto de aprender coisas novas e de compartilhar o que aprendo.
 
 Atualmente estudando C e Java, com experiência prática em HTML, CSS e JavaScript.
 Também venho trabalhando com ferramentas de DevOps como Docker e Terraform.
@@ -13,7 +18,7 @@ Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum A
 
 ## Estatísticas
 
-![Stats](https://github-readme-stats-eight-theta.vercel.app/api?username=PepeHenrque&show_icons=true&theme=default&hide_border=true)
+![Stats](https://SEU-LINK-DA-VERCEL.vercel.app/api?username=PepeHenrque&show_icons=true&theme=default&hide_border=true)
 
 ## Contribuições
 
