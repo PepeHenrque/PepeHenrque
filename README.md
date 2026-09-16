@@ -1,4 +1,3 @@
-# PepeHenrque-PepeHenrque
 # Pedro Henrique
 
 Graduando em Ciência da Computação.
