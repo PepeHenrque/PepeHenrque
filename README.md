@@ -13,7 +13,12 @@ Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum A
 
 ## Tecnologias
 
-[![Tecnologias](https://skillicons.dev/icons?i=c,java,py,html,arduino,terraform,jenkins,git,github)](https://skillicons.dev)
+<p>
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=c,java,py,html,js,arduino,terraform,jenkins,git,github" />
+  </a>
+  <img src="https://cdn.simpleicons.org/vagrant/1868F2" width="48" height="48" alt="Vagrant" title="Vagrant" />
+</p>
 
 ## Estatísticas
 
