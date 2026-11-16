@@ -22,7 +22,9 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 
 ## Estatísticas
 
-![Metrics](./github-metrics.svg)
+<p align="center">
+  <img src="./github-metrics.svg" width="100%" />
+</p>
 
 ## Contribuições
 

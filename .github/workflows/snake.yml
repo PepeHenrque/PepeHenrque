@@ -30,9 +30,36 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           user: PepeHenrque
           template: classic
-          base: header, activity, community, repositories, metadata
+          base: header, activity, community, repositories
+          base_metadata: no
           config_timezone: America/Sao_Paulo
+          config_padding: 0, 10%
           filename: github-metrics.svg
+
+          # Linhas de código modificadas (adicionadas/removidas)
+          plugin_lines: yes
+          plugin_lines_history_limit: 1
+
+          # Gráfico de linguagens mais usadas (barra colorida visual)
+          plugin_languages: yes
+          plugin_languages_analysis_timeout: 15
+          plugin_languages_categories: markup, programming
+          plugin_languages_colors: github
+          plugin_languages_limit: 8
+          plugin_languages_recent_categories: markup, programming
+          plugin_languages_sections: most-used
+          plugin_languages_details: lines, percentage
+
+          # Hábitos e horários mais produtivos
+          plugin_habits: yes
+          plugin_habits_from: 200
+          plugin_habits_days: 14
+          plugin_habits_facts: yes
+          plugin_habits_charts: yes
+
+          # Gráfico isométrico de contribuições (muito criativo e visual)
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
 
       - name: Move metrics to dist
         run: |
