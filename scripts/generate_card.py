@@ -1,14 +1,13 @@
 import os
 import json
 import urllib.request
-import re
 from datetime import datetime
 
 USERNAME = "PepeHenrque"
 TOKEN = os.environ.get("GITHUB_TOKEN", "")
 
 def fetch_events():
-    headers = {"User-Agent": "Mozilla/5.0"}
+    headers = {"User-Agent": "PepeCard"}
     if TOKEN:
         headers["Authorization"] = f"Bearer {TOKEN}"
     try:
@@ -16,379 +15,263 @@ def fetch_events():
         with urllib.request.urlopen(req) as resp:
             events = json.loads(resp.read().decode("utf-8"))
             repo_counts = {}
+            recent_lang = "TypeScript"
             for e in events:
                 rname = e.get("repo", {}).get("name", "")
                 if rname and rname != f"{USERNAME}/{USERNAME}":
                     repo_counts[rname] = repo_counts.get(rname, 0) + 1
-            
-            top_repo = max(repo_counts.items(), key=lambda x: x[1])[0] if repo_counts else "talescavalcanti/MEI-agente"
-            return top_repo, "TypeScript"
+            top_repo = max(repo_counts.items(), key=lambda x: x[1])[0] if repo_counts else ""
+            # Get language from top repo
+            if top_repo:
+                try:
+                    req2 = urllib.request.Request(f"https://api.github.com/repos/{top_repo}/languages", headers=headers)
+                    with urllib.request.urlopen(req2) as resp2:
+                        langs = json.loads(resp2.read().decode("utf-8"))
+                        if langs:
+                            recent_lang = max(langs.items(), key=lambda x: x[1])[0]
+                except:
+                    pass
+            return top_repo.split("/")[-1] if "/" in top_repo else top_repo, recent_lang
     except Exception as e:
         print("Events error:", e)
-        return "talescavalcanti/MEI-agente", "TypeScript"
+    return "apts", "TypeScript"
 
-def get_full_stats():
-    # GraphQL or Scraping
-    stars = 28
-    commits = 224
-    prs = 29
-    issues = 0
-    contributed = 31
+def get_stats():
+    stars, commits, prs, issues, contributed = 28, 224, 29, 0, 31
+    days = []
 
     if TOKEN:
-        gql_query = """
-        query($login: String!) {
-          user(login: $login) {
-            repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, ISSUE, PULL_REQUEST, REPOSITORY]) {
-              totalCount
+        gql = """query($login:String!){user(login:$login){
+            repositoriesContributedTo(first:1,contributionTypes:[COMMIT,ISSUE,PULL_REQUEST,REPOSITORY]){totalCount}
+            pullRequests(first:1){totalCount}
+            issues(first:1){totalCount}
+            contributionsCollection{
+                totalCommitContributions restrictedContributionsCount
+                contributionCalendar{totalContributions weeks{contributionDays{contributionCount}}}
             }
-            pullRequests(first: 1) {
-              totalCount
-            }
-            issues(first: 1) {
-              totalCount
-            }
-            contributionsCollection {
-              totalCommitContributions
-              restrictedContributionsCount
-              contributionCalendar {
-                totalContributions
-                weeks {
-                  contributionDays {
-                    contributionCount
-                  }
-                }
-              }
-            }
-            repositories(first: 100, ownerAffiliations: OWNER, isFork: false) {
-              nodes {
-                stargazerCount
-              }
-            }
-          }
-        }
-        """
+            repositories(first:100,ownerAffiliations:OWNER,isFork:false){nodes{stargazerCount}}
+        }}"""
         try:
-            data = json.dumps({"query": gql_query, "variables": {"login": USERNAME}}).encode("utf-8")
+            data = json.dumps({"query": gql, "variables": {"login": USERNAME}}).encode()
             req = urllib.request.Request("https://api.github.com/graphql", data=data, headers={
-                "User-Agent": "PepeHenrqueCard",
-                "Content-Type": "application/json",
+                "User-Agent": "PepeCard", "Content-Type": "application/json",
                 "Authorization": f"Bearer {TOKEN}"
             })
             with urllib.request.urlopen(req) as resp:
-                res = json.loads(resp.read().decode("utf-8"))
-                user = res["data"]["user"]
-                col = user["contributionsCollection"]
-                commits = col["totalCommitContributions"] + col["restrictedContributionsCount"]
-                prs = user["pullRequests"]["totalCount"]
-                issues = user["issues"]["totalCount"]
-                contributed = user["repositoriesContributedTo"]["totalCount"]
-                stars = sum(r["stargazerCount"] for r in user["repositories"]["nodes"])
-                weeks = col["contributionCalendar"]["weeks"]
-                return compile_metrics(stars, commits, prs, issues, contributed, weeks)
+                u = json.loads(resp.read())["data"]["user"]
+                c = u["contributionsCollection"]
+                commits = c["totalCommitContributions"] + c["restrictedContributionsCount"]
+                prs = u["pullRequests"]["totalCount"]
+                issues = u["issues"]["totalCount"]
+                contributed = u["repositoriesContributedTo"]["totalCount"]
+                stars = sum(r["stargazerCount"] for r in u["repositories"]["nodes"])
+                for w in c["contributionCalendar"]["weeks"]:
+                    for d in w["contributionDays"]:
+                        days.append(d["contributionCount"])
         except Exception as e:
-            print("GraphQL fallback:", e)
+            print("GQL error:", e)
 
-    return compile_metrics(stars, commits, prs, issues, contributed, None)
+    if not days:
+        days = [0]*300 + [1, 2, 0, 5, 12, 25, 45, 60, 40, 30, 85, 140, 160]
 
-def compile_metrics(stars, commits, prs, issues, contributed, weeks):
-    score = (commits * 2) + (prs * 3) + (issues * 1) + (stars * 4) + (contributed * 3)
-    if score >= 1000: rank = "S"
-    elif score >= 500: rank = "A+"
-    elif score >= 250: rank = "A"
-    elif score >= 100: rank = "B+"
-    elif score >= 50: rank = "B"
+    # Rank
+    sc = commits*2 + prs*3 + issues*1 + stars*4 + contributed*3
+    if sc >= 1000: rank = "S"
+    elif sc >= 500: rank = "A+"
+    elif sc >= 250: rank = "A"
+    elif sc >= 100: rank = "B+"
+    elif sc >= 50: rank = "B"
     else: rank = "B-"
 
-    total_contribs = 267
-    current_streak = 3
-    longest_streak = 4
-    days = []
+    # Streak
+    total_c = sum(days)
+    cur, lon, t = 0, 0, 0
+    for v in days:
+        if v > 0:
+            t += 1
+            if t > lon: lon = t
+        else:
+            t = 0
+    for v in reversed(days):
+        if v > 0: cur += 1
+        elif cur > 0: break
+    cur = max(cur, 0)
+    lon = max(lon, cur)
 
-    if weeks:
-        for w in weeks:
-            for d in w["contributionDays"]:
-                days.append(d["contributionCount"])
-        total_contribs = sum(days)
-        # Streaks
-        cur = 0
-        l_streak = 0
-        for c in days:
-            if c > 0:
-                cur += 1
-                if cur > l_streak: l_streak = cur
-            else:
-                cur = 0
-        c_streak = 0
-        for c in reversed(days):
-            if c > 0:
-                c_streak += 1
-            elif c_streak > 0:
-                break
-        current_streak = max(c_streak, 1)
-        longest_streak = max(l_streak, current_streak)
-    else:
-        # Curve aproximada
-        days = [0]*200 + [1, 2, 0, 5, 12, 25, 45, 60, 40, 30, 85, 140, 160]
-
-    top_repo, latest_lang = fetch_events()
-
-    # 16 quadradinhos (estilo lowlighter / git commit squares)
-    palette = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"]
-    blocks = [palette[min(4, max(1, (i % 4) + 1))] for i in range(16)]
-
-    # Sparkline smooth curve points (últimos 30 pontos agregados)
-    step = max(1, len(days) // 32)
-    curve_points = []
+    # Sparkline: aggregate to 40 points
+    step = max(1, len(days) // 40)
+    pts = []
     for i in range(0, len(days), step):
-        curve_points.append(sum(days[i:i+step]))
-    curve_points = curve_points[-32:]
+        pts.append(sum(days[i:i+step]))
+    pts = pts[-40:]
+
+    top_repo, recent_lang = fetch_events()
 
     return {
-        "stars": stars,
-        "commits": commits,
-        "prs": prs,
-        "issues": issues,
-        "contributed": contributed,
-        "rank": rank,
-        "total_contribs": total_contribs,
-        "current_streak": current_streak,
-        "longest_streak": longest_streak,
-        "top_repo": top_repo,
-        "latest_lang": latest_lang,
-        "blocks": blocks,
-        "curve_points": curve_points
+        "stars": stars, "commits": commits, "prs": prs, "issues": issues,
+        "contributed": contributed, "rank": rank,
+        "total": total_c, "cur_streak": cur, "lon_streak": lon,
+        "pts": pts, "top_repo": top_repo, "recent_lang": recent_lang
     }
 
-def generate_svg(data):
-    # Coordenadas do gráfico de curva suave à direita
-    # Box do gráfico: x=460, y=95, w=275, h=100
-    points = data["curve_points"]
-    max_p = max(points) if points and max(points) > 0 else 1
+def make_svg(d):
+    # --- Graph path (smooth cubic bezier) ---
+    pts = d["pts"]
+    mx = max(pts) if pts and max(pts) > 0 else 1
+    gx, gy, gw, gh = 18, 278, 459, 68
+    st = gw / max(1, len(pts)-1)
+    coords = [(gx + i*st, gy - (v/mx)*gh) for i, v in enumerate(pts)]
     
-    gx = 460
-    gy_base = 205
-    gw = 275
-    gh = 95
-    step = gw / max(1, len(points) - 1)
-    
-    coords = []
-    for i, val in enumerate(points):
-        x = gx + (i * step)
-        y = gy_base - ((val / max_p) * gh)
-        coords.append((x, y))
-
-    # Spline suave cúbica
-    path_d = f"M {coords[0][0]:.1f} {coords[0][1]:.1f}"
+    path = f"M{coords[0][0]:.1f},{coords[0][1]:.1f}"
     for i in range(1, len(coords)):
-        prev = coords[i-1]
-        curr = coords[i]
-        cpx1 = prev[0] + (curr[0] - prev[0]) / 2
-        cpy1 = prev[1]
-        cpx2 = prev[0] + (curr[0] - prev[0]) / 2
-        cpy2 = curr[1]
-        path_d += f" C {cpx1:.1f} {cpy1:.1f}, {cpx2:.1f} {cpy2:.1f}, {curr[0]:.1f} {curr[1]:.1f}"
-    
-    fill_d = f"{path_d} L {coords[-1][0]:.1f} {gy_base} L {coords[0][0]:.1f} {gy_base} Z"
+        p, c = coords[i-1], coords[i]
+        mx1 = p[0] + (c[0]-p[0])/2
+        path += f" C{mx1:.1f},{p[1]:.1f},{mx1:.1f},{c[1]:.1f},{c[0]:.1f},{c[1]:.1f}"
+    fill_path = f"{path} L{coords[-1][0]:.1f},{gy} L{coords[0][0]:.1f},{gy} Z"
 
-    # Quadradinhos "by number of contributions"
-    block_svgs = []
-    for i, color in enumerate(data["blocks"]):
-        bx = 555 + (i * 12)
-        block_svgs.append(f'<rect class="scale-in" style="animation-delay: {0.1 + i*0.04:.2f}s" x="{bx}" y="24" width="9" height="9" rx="2" fill="{color}"/>')
-    blocks_str = "".join(block_svgs)
+    # --- Rank gauge arc ---
+    # SVG circle arc: r=20, circumference=125.66
+    circ = 125.66
+    # Score percentage (rough)
+    sc = d["commits"]*2 + d["prs"]*3 + d["issues"]*1 + d["stars"]*4 + d["contributed"]*3
+    pct = min(sc / 800, 1.0)  # normalize to 800 as "S" threshold
+    filled = circ * pct
+    gap = circ - filled
 
-    svg = f"""<svg width="760" height="235" viewBox="0 0 760 235" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <style>
-      /* Tipografia Limpa */
-      .title {{ font: 700 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #0969da; }}
-      .sub {{ font: 500 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }}
-      .meta-lbl {{ font: 500 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }}
-      .meta-val {{ font: 600 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #24292f; }}
-      
-      .stat-lbl {{ font: 400 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }}
-      .stat-val {{ font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #24292f; }}
-      
-      .streak-num {{ font: 700 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #fd8c73; }}
-      .streak-lbl {{ font: 700 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #cf222e; letter-spacing: 0.5px; }}
-      .streak-sub {{ font: 500 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }}
-      
-      .chart-title {{ font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; letter-spacing: 0.5px; }}
-      .rank-letter {{ font: 800 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #24292f; }}
+    # --- Contribution squares (16 blocks) ---
+    greens = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"]
+    blocks = ""
+    for i in range(16):
+        color = greens[min(4, max(1, (i % 4) + 1))]
+        bx = 310 + i * 11
+        blocks += f'<rect x="{bx}" y="13" width="8" height="8" rx="2" fill="{color}"/>'
 
-      /* Animações Dinâmicas */
-      @keyframes dashAnim {{
-        0% {{ stroke-dashoffset: 600; opacity: 0; }}
-        100% {{ stroke-dashoffset: 0; opacity: 1; }}
-      }}
-      @keyframes fadeIn {{
-        from {{ opacity: 0; transform: translateY(6px); }}
-        to {{ opacity: 1; transform: translateY(0); }}
-      }}
-      @keyframes scaleIn {{
-        from {{ transform: scale(0.6); opacity: 0; }}
-        to {{ transform: scale(1); opacity: 1; }}
-      }}
-      @keyframes rankGauge {{
-        from {{ stroke-dashoffset: 140; }}
-        to {{ stroke-dashoffset: 45; }}
-      }}
-      @keyframes flamePulse {{
-        0%, 100% {{ transform: scale(1); }}
-        50% {{ transform: scale(1.15) rotate(5deg); }}
-      }}
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="495" height="360" viewBox="0 0 495 360">
+  <style>
+    @keyframes draw {{ from {{ stroke-dashoffset: 800 }} to {{ stroke-dashoffset: 0 }} }}
+    @keyframes fill-up {{ from {{ opacity: 0 }} to {{ opacity: 1 }} }}
+    @keyframes gauge {{ from {{ stroke-dashoffset: {circ:.1f} }} to {{ stroke-dashoffset: {gap:.1f} }} }}
+    text {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }}
+  </style>
 
-      .fade-in {{ animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }}
-      .scale-in {{ animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: center; }}
-      .chart-line {{
-        stroke-dasharray: 600;
-        stroke-dashoffset: 600;
-        animation: dashAnim 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
-      }}
-      .chart-bg {{
-        opacity: 0;
-        animation: fadeIn 1.2s ease forwards 0.8s;
-      }}
-      .gauge-ring {{
-        stroke-dasharray: 140;
-        stroke-dashoffset: 140;
-        animation: rankGauge 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
-      }}
-      .flame {{
-        display: inline-block;
-        transform-origin: center;
-        animation: flamePulse 2s ease-in-out infinite;
-      }}
-    </style>
+  <!-- Background -->
+  <rect x="0.5" y="0.5" width="494" height="359" rx="6" fill="#fff" stroke="#d0d7de"/>
 
-    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2da44e" stop-opacity="0.38"/>
-      <stop offset="100%" stop-color="#2da44e" stop-opacity="0.02"/>
-    </linearGradient>
-    
-    <linearGradient id="rankGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0969da"/>
-      <stop offset="100%" stop-color="#54aeff"/>
-    </linearGradient>
-  </defs>
+  <!-- === TOP BAR: Name + Squares === -->
+  <text x="18" y="27" fill="#0969da" font-weight="700" font-size="16">Pedro Henrique</text>
+  <text x="155" y="27" fill="#656d76" font-weight="400" font-size="12">@PepeHenrque</text>
+  {blocks}
+  <text x="486" y="27" fill="#656d76" font-size="10" text-anchor="end">{d['contributed']} repos</text>
 
-  <!-- Fundo 100% Branco com borda sutil e sombra elegante -->
-  <rect x="1" y="1" width="758" height="233" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-width="1.2"/>
+  <!-- Divider -->
+  <line x1="18" y1="38" x2="477" y2="38" stroke="#d8dee4" stroke-width="0.6"/>
 
-  <!-- Topo: Título + Destaque do Repo Recente + Linguagem Recente -->
-  <g transform="translate(25, 32)" class="fade-in">
-    <text class="title">Pedro Henrique</text>
-    <text x="140" y="0" class="sub">@PepeHenrque</text>
+  <!-- === BADGES: Active Repo + Recent Lang === -->
+  <rect x="18" y="46" width="180" height="20" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.6"/>
+  <text x="30" y="60" fill="#656d76" font-size="11">📦 Active: <tspan fill="#24292f" font-weight="600">{d['top_repo']}</tspan></text>
+
+  <rect x="206" y="46" width="160" height="20" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.6"/>
+  <text x="218" y="60" fill="#656d76" font-size="11">🔵 Recent: <tspan fill="#24292f" font-weight="600">{d['recent_lang']}</tspan></text>
+
+  <!-- === LEFT COLUMN: Stats === -->
+  <!-- Stars -->
+  <g transform="translate(18, 86)">
+    <circle cx="7" cy="7" r="7" fill="#faf0c8"/>
+    <text x="7" y="10.5" fill="#9a6700" font-size="9" text-anchor="middle" font-weight="700">★</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Stars</text>
+    <text x="75" y="11" fill="#24292f" font-size="13" font-weight="600">{d['stars']}</text>
   </g>
 
-  <!-- Blocos de Quadradinhos "by number of contributions" (estilo lowlighter) -->
-  <g class="fade-in">
-    {blocks_str}
-    <text x="740" y="48" text-anchor="end" class="meta-lbl">Contributed to {data['contributed']} repositories</text>
+  <!-- Commits -->
+  <g transform="translate(18, 112)">
+    <circle cx="7" cy="7" r="7" fill="#ddf4ff"/>
+    <text x="7" y="11" fill="#0969da" font-size="9" text-anchor="middle" font-weight="700">⊙</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Commits</text>
+    <text x="90" y="11" fill="#24292f" font-size="13" font-weight="600">{d['commits']}</text>
   </g>
 
-  <!-- Linha divisória fina -->
-  <line x1="25" y1="58" x2="735" y2="58" stroke="#eaeef2" stroke-width="1"/>
-
-  <!-- Badges Criativos: Repo mais ativo recentemente & Linguagem recente -->
-  <g transform="translate(25, 78)" class="fade-in" style="animation-delay: 0.15s">
-    <!-- Top Repo Badge -->
-    <rect x="0" y="-12" width="220" height="22" rx="11" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.8"/>
-    <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" fill="#0969da" transform="translate(8, -8) scale(0.8)"/>
-    <text x="24" y="3" class="meta-lbl">Active Repo: <tspan class="meta-val">{data['top_repo']}</tspan></text>
-
-    <!-- Latest Language Badge -->
-    <rect x="230" y="-12" width="170" height="22" rx="11" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.8"/>
-    <circle cx="242" cy="-1" r="4.5" fill="#3178c6"/>
-    <text x="252" y="3" class="meta-lbl">Recent Lang: <tspan class="meta-val">{data['latest_lang']}</tspan></text>
+  <!-- PRs -->
+  <g transform="translate(18, 138)">
+    <circle cx="7" cy="7" r="7" fill="#dafbe1"/>
+    <text x="7" y="11" fill="#1a7f37" font-size="9" text-anchor="middle" font-weight="700">⑂</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Pull Requests</text>
+    <text x="120" y="11" fill="#24292f" font-size="13" font-weight="600">{d['prs']}</text>
   </g>
 
-  <!-- ==================== LADO ESQUERDO: MÉTRICAS (Alinhadas à esquerda) ==================== -->
-  <g transform="translate(25, 115)" class="fade-in" style="animation-delay: 0.2s">
-    <!-- Stars -->
-    <g transform="translate(0, 0)">
-      <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" fill="#e3b341"/>
-      <text x="22" y="11" class="stat-lbl">Total Stars Earned:</text>
-      <text x="165" y="11" class="stat-val">{data['stars']}</text>
-    </g>
-
-    <!-- Commits -->
-    <g transform="translate(0, 26)">
-      <path d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z" fill="#0969da"/>
-      <text x="22" y="11" class="stat-lbl">Total Commits:</text>
-      <text x="165" y="11" class="stat-val">{data['commits']}</text>
-    </g>
-
-    <!-- PRs -->
-    <g transform="translate(0, 52)">
-      <path d="M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm0 10a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" fill="#1a7f37"/>
-      <text x="22" y="11" class="stat-lbl">Total PRs:</text>
-      <text x="165" y="11" class="stat-val">{data['prs']}</text>
-    </g>
-
-    <!-- Issues -->
-    <g transform="translate(0, 78)">
-      <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z" fill="#cf222e"/>
-      <text x="22" y="11" class="stat-lbl">Total Issues:</text>
-      <text x="165" y="11" class="stat-val">{data['issues']}</text>
-    </g>
+  <!-- Issues -->
+  <g transform="translate(18, 164)">
+    <circle cx="7" cy="7" r="7" fill="#ffebe9"/>
+    <text x="7" y="11" fill="#cf222e" font-size="9" text-anchor="middle" font-weight="700">!</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Issues</text>
+    <text x="75" y="11" fill="#24292f" font-size="13" font-weight="600">{d['issues']}</text>
   </g>
 
-  <!-- Divisória vertical -->
-  <line x1="225" y1="105" x2="225" y2="215" stroke="#eaeef2" stroke-width="1"/>
+  <!-- === CENTER: Streak === -->
+  <!-- Vertical divider -->
+  <line x1="165" y1="80" x2="165" y2="185" stroke="#d8dee4" stroke-width="0.6"/>
 
-  <!-- ==================== CENTRO: STREAK COM ANEL / FOGO ==================== -->
-  <g transform="translate(245, 105)" class="fade-in" style="animation-delay: 0.25s">
-    <!-- Círculo animado do Streak -->
-    <g transform="translate(60, 42)">
-      <circle cx="0" cy="0" r="26" fill="none" stroke="#ffebe9" stroke-width="4"/>
-      <circle cx="0" cy="0" r="26" fill="none" stroke="#cf222e" stroke-width="4" stroke-dasharray="163" stroke-dashoffset="50" transform="rotate(-90)"/>
-      <text x="0" y="7" text-anchor="middle" class="streak-num">{data['current_streak']}</text>
-      <!-- Fogo pulsante -->
-      <g transform="translate(-6, -38)" class="flame">
-        <path d="M5.5 0C4.5 2 3.5 3 2 4.5 0 6.5 0 9 0 9c0 3.3 2.7 6 6 6s6-2.7 6-6c0-4-3-6-4.5-8-.5 1.5-1 2-2 2z" fill="#cf222e"/>
-      </g>
-    </g>
-    <text x="60" y="85" text-anchor="middle" class="streak-lbl">CURRENT STREAK</text>
-    
-    <!-- Total & Longest -->
-    <g transform="translate(130, 20)">
-      <text class="stat-lbl">Total:</text>
-      <text x="65" y="0" class="stat-val">{data['total_contribs']}</text>
-      
-      <text y="28" class="stat-lbl">Longest:</text>
-      <text x="65" y="28" class="stat-val">{data['longest_streak']} days</text>
-    </g>
+  <g transform="translate(220, 85)">
+    <text x="0" y="12" fill="#656d76" font-size="11" font-weight="500">TOTAL</text>
+    <text x="0" y="35" fill="#24292f" font-size="22" font-weight="700">{d['total']}</text>
+
+    <text x="80" y="12" fill="#cf222e" font-size="11" font-weight="600">CURRENT STREAK 🔥</text>
+    <text x="80" y="35" fill="#cf222e" font-size="22" font-weight="700">{d['cur_streak']} <tspan font-size="13" fill="#656d76">days</tspan></text>
+
+    <text x="0" y="70" fill="#656d76" font-size="11" font-weight="500">LONGEST</text>
+    <text x="0" y="90" fill="#24292f" font-size="18" font-weight="600">{d['lon_streak']} <tspan font-size="12" fill="#656d76">days</tspan></text>
   </g>
 
-  <!-- ==================== NOTA COM MEDIDOR CIRCULAR (RANK B-) ==================== -->
-  <g transform="translate(425, 147)" class="scale-in" style="animation-delay: 0.3s">
-    <!-- Gauge ring cinza de fundo -->
-    <circle cx="0" cy="0" r="24" fill="none" stroke="#ebf5ff" stroke-width="4.5"/>
-    <!-- Gauge ring azul animado -->
-    <circle class="gauge-ring" cx="0" cy="0" r="24" fill="none" stroke="url(#rankGrad)" stroke-width="4.5" stroke-linecap="round" transform="rotate(-90)"/>
-    <text x="0" y="7" text-anchor="middle" class="rank-letter">{data['rank']}</text>
-    <text x="0" y="38" text-anchor="middle" class="meta-lbl">SCORE</text>
+  <!-- === RIGHT: Rank Gauge === -->
+  <line x1="415" y1="80" x2="415" y2="185" stroke="#d8dee4" stroke-width="0.6"/>
+
+  <g transform="translate(452, 130)">
+    <!-- Background ring -->
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#e8f1ff" stroke-width="4"/>
+    <!-- Animated gauge -->
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#0969da" stroke-width="4"
+            stroke-dasharray="{circ:.1f}" stroke-dashoffset="{gap:.1f}"
+            stroke-linecap="round" transform="rotate(-90)">
+      <animate attributeName="stroke-dashoffset" from="{circ:.1f}" to="{gap:.1f}" dur="1.5s" fill="freeze"/>
+    </circle>
+    <text x="0" y="7" fill="#24292f" font-size="18" font-weight="800" text-anchor="middle">{d['rank']}</text>
+    <text x="0" y="33" fill="#656d76" font-size="9" font-weight="600" text-anchor="middle">RANK</text>
   </g>
 
-  <!-- ==================== LADO DIREITO: GRÁFICO DINÂMICO DE CONTRIBUIÇÕES ==================== -->
-  <g transform="translate(490, 85)" class="fade-in" style="animation-delay: 0.35s">
-    <text class="chart-title">CONTRIBUTIONS OVER TIME</text>
-  </g>
-  
-  <!-- Área sob a curva animada -->
-  <path class="chart-bg" d="{fill_d}" fill="url(#chartGrad)"/>
-  
-  <!-- Linha do gráfico desenhando suavemente -->
-  <path class="chart-line" d="{path_d}" fill="none" stroke="#1a7f37" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-"""
+  <!-- === Divider before graph === -->
+  <line x1="18" y1="195" x2="477" y2="195" stroke="#d8dee4" stroke-width="0.6"/>
+
+  <!-- === BOTTOM: Contribution Graph === -->
+  <text x="18" y="212" fill="#656d76" font-size="10" font-weight="600" letter-spacing="0.5">CONTRIBUTIONS OVER TIME</text>
+
+  <!-- Graph fill (animated) -->
+  <path d="{fill_path}" fill="#2da44e" opacity="0.12">
+    <animate attributeName="opacity" from="0" to="0.12" dur="1.8s" fill="freeze"/>
+  </path>
+
+  <!-- Graph line (animated draw) -->
+  <path d="{path}" fill="none" stroke="#1a7f37" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="800" stroke-dashoffset="800">
+    <animate attributeName="stroke-dashoffset" from="800" to="0" dur="2s" fill="freeze"/>
+  </path>
+
+  <!-- Dot at last point -->
+  <circle cx="{coords[-1][0]:.1f}" cy="{coords[-1][1]:.1f}" r="3" fill="#1a7f37">
+    <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.8s" fill="freeze"/>
+  </circle>
+  <circle cx="{coords[-1][0]:.1f}" cy="{coords[-1][1]:.1f}" r="6" fill="#1a7f37" opacity="0">
+    <animate attributeName="opacity" values="0;0.3;0" dur="2s" begin="2s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="3;8;3" dur="2s" begin="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- === Footer === -->
+  <line x1="18" y1="290" x2="477" y2="290" stroke="#d8dee4" stroke-width="0.4"/>
+  <text x="248" y="306" fill="#afb8c1" font-size="9" text-anchor="middle">Auto-generated daily · github.com/PepeHenrque</text>
+</svg>'''
     return svg
 
 if __name__ == "__main__":
-    data = get_full_stats()
-    svg_code = generate_svg(data)
+    d = get_stats()
+    svg = make_svg(d)
     with open("github-stats.svg", "w", encoding="utf-8") as f:
-        f.write(svg_code)
-    print("Custom animated white stats card generated successfully!")
+        f.write(svg)
+    print("Done! Card generated.")

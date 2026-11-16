@@ -1,185 +1,121 @@
-<svg width="760" height="235" viewBox="0 0 760 235" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <style>
-      /* Tipografia Limpa */
-      .title { font: 700 17px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #0969da; }
-      .sub { font: 500 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }
-      .meta-lbl { font: 500 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }
-      .meta-val { font: 600 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #24292f; }
-      
-      .stat-lbl { font: 400 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }
-      .stat-val { font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #24292f; }
-      
-      .streak-num { font: 700 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #fd8c73; }
-      .streak-lbl { font: 700 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #cf222e; letter-spacing: 0.5px; }
-      .streak-sub { font: 500 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; }
-      
-      .chart-title { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #57606a; letter-spacing: 0.5px; }
-      .rank-letter { font: 800 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #24292f; }
+<svg xmlns="http://www.w3.org/2000/svg" width="495" height="360" viewBox="0 0 495 360">
+  <style>
+    @keyframes draw { from { stroke-dashoffset: 800 } to { stroke-dashoffset: 0 } }
+    @keyframes fill-up { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes gauge { from { stroke-dashoffset: 125.7 } to { stroke-dashoffset: 9.4 } }
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+  </style>
 
-      /* Animações Dinâmicas */
-      @keyframes dashAnim {
-        0% { stroke-dashoffset: 600; opacity: 0; }
-        100% { stroke-dashoffset: 0; opacity: 1; }
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(6px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes scaleIn {
-        from { transform: scale(0.6); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-      }
-      @keyframes rankGauge {
-        from { stroke-dashoffset: 140; }
-        to { stroke-dashoffset: 45; }
-      }
-      @keyframes flamePulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.15) rotate(5deg); }
-      }
+  <!-- Background -->
+  <rect x="0.5" y="0.5" width="494" height="359" rx="6" fill="#fff" stroke="#d0d7de"/>
 
-      .fade-in { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-      .scale-in { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; transform-origin: center; }
-      .chart-line {
-        stroke-dasharray: 600;
-        stroke-dashoffset: 600;
-        animation: dashAnim 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
-      }
-      .chart-bg {
-        opacity: 0;
-        animation: fadeIn 1.2s ease forwards 0.8s;
-      }
-      .gauge-ring {
-        stroke-dasharray: 140;
-        stroke-dashoffset: 140;
-        animation: rankGauge 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
-      }
-      .flame {
-        display: inline-block;
-        transform-origin: center;
-        animation: flamePulse 2s ease-in-out infinite;
-      }
-    </style>
+  <!-- === TOP BAR: Name + Squares === -->
+  <text x="18" y="27" fill="#0969da" font-weight="700" font-size="16">Pedro Henrique</text>
+  <text x="155" y="27" fill="#656d76" font-weight="400" font-size="12">@PepeHenrque</text>
+  <rect x="310" y="13" width="8" height="8" rx="2" fill="#9be9a8"/><rect x="321" y="13" width="8" height="8" rx="2" fill="#40c463"/><rect x="332" y="13" width="8" height="8" rx="2" fill="#30a14e"/><rect x="343" y="13" width="8" height="8" rx="2" fill="#216e39"/><rect x="354" y="13" width="8" height="8" rx="2" fill="#9be9a8"/><rect x="365" y="13" width="8" height="8" rx="2" fill="#40c463"/><rect x="376" y="13" width="8" height="8" rx="2" fill="#30a14e"/><rect x="387" y="13" width="8" height="8" rx="2" fill="#216e39"/><rect x="398" y="13" width="8" height="8" rx="2" fill="#9be9a8"/><rect x="409" y="13" width="8" height="8" rx="2" fill="#40c463"/><rect x="420" y="13" width="8" height="8" rx="2" fill="#30a14e"/><rect x="431" y="13" width="8" height="8" rx="2" fill="#216e39"/><rect x="442" y="13" width="8" height="8" rx="2" fill="#9be9a8"/><rect x="453" y="13" width="8" height="8" rx="2" fill="#40c463"/><rect x="464" y="13" width="8" height="8" rx="2" fill="#30a14e"/><rect x="475" y="13" width="8" height="8" rx="2" fill="#216e39"/>
+  <text x="486" y="27" fill="#656d76" font-size="10" text-anchor="end">31 repos</text>
 
-    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2da44e" stop-opacity="0.38"/>
-      <stop offset="100%" stop-color="#2da44e" stop-opacity="0.02"/>
-    </linearGradient>
-    
-    <linearGradient id="rankGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0969da"/>
-      <stop offset="100%" stop-color="#54aeff"/>
-    </linearGradient>
-  </defs>
+  <!-- Divider -->
+  <line x1="18" y1="38" x2="477" y2="38" stroke="#d8dee4" stroke-width="0.6"/>
 
-  <!-- Fundo 100% Branco com borda sutil e sombra elegante -->
-  <rect x="1" y="1" width="758" height="233" rx="10" fill="#ffffff" stroke="#d0d7de" stroke-width="1.2"/>
+  <!-- === BADGES: Active Repo + Recent Lang === -->
+  <rect x="18" y="46" width="180" height="20" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.6"/>
+  <text x="30" y="60" fill="#656d76" font-size="11">📦 Active: <tspan fill="#24292f" font-weight="600">apts</tspan></text>
 
-  <!-- Topo: Título + Destaque do Repo Recente + Linguagem Recente -->
-  <g transform="translate(25, 32)" class="fade-in">
-    <text class="title">Pedro Henrique</text>
-    <text x="140" y="0" class="sub">@PepeHenrque</text>
+  <rect x="206" y="46" width="160" height="20" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.6"/>
+  <text x="218" y="60" fill="#656d76" font-size="11">🔵 Recent: <tspan fill="#24292f" font-weight="600">TypeScript</tspan></text>
+
+  <!-- === LEFT COLUMN: Stats === -->
+  <!-- Stars -->
+  <g transform="translate(18, 86)">
+    <circle cx="7" cy="7" r="7" fill="#faf0c8"/>
+    <text x="7" y="10.5" fill="#9a6700" font-size="9" text-anchor="middle" font-weight="700">★</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Stars</text>
+    <text x="75" y="11" fill="#24292f" font-size="13" font-weight="600">28</text>
   </g>
 
-  <!-- Blocos de Quadradinhos "by number of contributions" (estilo lowlighter) -->
-  <g class="fade-in">
-    <rect class="scale-in" style="animation-delay: 0.10s" x="555" y="24" width="9" height="9" rx="2" fill="#9be9a8"/><rect class="scale-in" style="animation-delay: 0.14s" x="567" y="24" width="9" height="9" rx="2" fill="#40c463"/><rect class="scale-in" style="animation-delay: 0.18s" x="579" y="24" width="9" height="9" rx="2" fill="#30a14e"/><rect class="scale-in" style="animation-delay: 0.22s" x="591" y="24" width="9" height="9" rx="2" fill="#216e39"/><rect class="scale-in" style="animation-delay: 0.26s" x="603" y="24" width="9" height="9" rx="2" fill="#9be9a8"/><rect class="scale-in" style="animation-delay: 0.30s" x="615" y="24" width="9" height="9" rx="2" fill="#40c463"/><rect class="scale-in" style="animation-delay: 0.34s" x="627" y="24" width="9" height="9" rx="2" fill="#30a14e"/><rect class="scale-in" style="animation-delay: 0.38s" x="639" y="24" width="9" height="9" rx="2" fill="#216e39"/><rect class="scale-in" style="animation-delay: 0.42s" x="651" y="24" width="9" height="9" rx="2" fill="#9be9a8"/><rect class="scale-in" style="animation-delay: 0.46s" x="663" y="24" width="9" height="9" rx="2" fill="#40c463"/><rect class="scale-in" style="animation-delay: 0.50s" x="675" y="24" width="9" height="9" rx="2" fill="#30a14e"/><rect class="scale-in" style="animation-delay: 0.54s" x="687" y="24" width="9" height="9" rx="2" fill="#216e39"/><rect class="scale-in" style="animation-delay: 0.58s" x="699" y="24" width="9" height="9" rx="2" fill="#9be9a8"/><rect class="scale-in" style="animation-delay: 0.62s" x="711" y="24" width="9" height="9" rx="2" fill="#40c463"/><rect class="scale-in" style="animation-delay: 0.66s" x="723" y="24" width="9" height="9" rx="2" fill="#30a14e"/><rect class="scale-in" style="animation-delay: 0.70s" x="735" y="24" width="9" height="9" rx="2" fill="#216e39"/>
-    <text x="740" y="48" text-anchor="end" class="meta-lbl">Contributed to 31 repositories</text>
+  <!-- Commits -->
+  <g transform="translate(18, 112)">
+    <circle cx="7" cy="7" r="7" fill="#ddf4ff"/>
+    <text x="7" y="11" fill="#0969da" font-size="9" text-anchor="middle" font-weight="700">⊙</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Commits</text>
+    <text x="90" y="11" fill="#24292f" font-size="13" font-weight="600">224</text>
   </g>
 
-  <!-- Linha divisória fina -->
-  <line x1="25" y1="58" x2="735" y2="58" stroke="#eaeef2" stroke-width="1"/>
-
-  <!-- Badges Criativos: Repo mais ativo recentemente & Linguagem recente -->
-  <g transform="translate(25, 78)" class="fade-in" style="animation-delay: 0.15s">
-    <!-- Top Repo Badge -->
-    <rect x="0" y="-12" width="220" height="22" rx="11" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.8"/>
-    <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" fill="#0969da" transform="translate(8, -8) scale(0.8)"/>
-    <text x="24" y="3" class="meta-lbl">Active Repo: <tspan class="meta-val">PepeHenrque/apts</tspan></text>
-
-    <!-- Latest Language Badge -->
-    <rect x="230" y="-12" width="170" height="22" rx="11" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.8"/>
-    <circle cx="242" cy="-1" r="4.5" fill="#3178c6"/>
-    <text x="252" y="3" class="meta-lbl">Recent Lang: <tspan class="meta-val">TypeScript</tspan></text>
+  <!-- PRs -->
+  <g transform="translate(18, 138)">
+    <circle cx="7" cy="7" r="7" fill="#dafbe1"/>
+    <text x="7" y="11" fill="#1a7f37" font-size="9" text-anchor="middle" font-weight="700">⑂</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Pull Requests</text>
+    <text x="120" y="11" fill="#24292f" font-size="13" font-weight="600">29</text>
   </g>
 
-  <!-- ==================== LADO ESQUERDO: MÉTRICAS (Alinhadas à esquerda) ==================== -->
-  <g transform="translate(25, 115)" class="fade-in" style="animation-delay: 0.2s">
-    <!-- Stars -->
-    <g transform="translate(0, 0)">
-      <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" fill="#e3b341"/>
-      <text x="22" y="11" class="stat-lbl">Total Stars Earned:</text>
-      <text x="165" y="11" class="stat-val">28</text>
-    </g>
-
-    <!-- Commits -->
-    <g transform="translate(0, 26)">
-      <path d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z" fill="#0969da"/>
-      <text x="22" y="11" class="stat-lbl">Total Commits:</text>
-      <text x="165" y="11" class="stat-val">224</text>
-    </g>
-
-    <!-- PRs -->
-    <g transform="translate(0, 52)">
-      <path d="M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm0 10a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" fill="#1a7f37"/>
-      <text x="22" y="11" class="stat-lbl">Total PRs:</text>
-      <text x="165" y="11" class="stat-val">29</text>
-    </g>
-
-    <!-- Issues -->
-    <g transform="translate(0, 78)">
-      <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z" fill="#cf222e"/>
-      <text x="22" y="11" class="stat-lbl">Total Issues:</text>
-      <text x="165" y="11" class="stat-val">0</text>
-    </g>
+  <!-- Issues -->
+  <g transform="translate(18, 164)">
+    <circle cx="7" cy="7" r="7" fill="#ffebe9"/>
+    <text x="7" y="11" fill="#cf222e" font-size="9" text-anchor="middle" font-weight="700">!</text>
+    <text x="20" y="11" fill="#656d76" font-size="13">Issues</text>
+    <text x="75" y="11" fill="#24292f" font-size="13" font-weight="600">0</text>
   </g>
 
-  <!-- Divisória vertical -->
-  <line x1="225" y1="105" x2="225" y2="215" stroke="#eaeef2" stroke-width="1"/>
+  <!-- === CENTER: Streak === -->
+  <!-- Vertical divider -->
+  <line x1="165" y1="80" x2="165" y2="185" stroke="#d8dee4" stroke-width="0.6"/>
 
-  <!-- ==================== CENTRO: STREAK COM ANEL / FOGO ==================== -->
-  <g transform="translate(245, 105)" class="fade-in" style="animation-delay: 0.25s">
-    <!-- Círculo animado do Streak -->
-    <g transform="translate(60, 42)">
-      <circle cx="0" cy="0" r="26" fill="none" stroke="#ffebe9" stroke-width="4"/>
-      <circle cx="0" cy="0" r="26" fill="none" stroke="#cf222e" stroke-width="4" stroke-dasharray="163" stroke-dashoffset="50" transform="rotate(-90)"/>
-      <text x="0" y="7" text-anchor="middle" class="streak-num">3</text>
-      <!-- Fogo pulsante -->
-      <g transform="translate(-6, -38)" class="flame">
-        <path d="M5.5 0C4.5 2 3.5 3 2 4.5 0 6.5 0 9 0 9c0 3.3 2.7 6 6 6s6-2.7 6-6c0-4-3-6-4.5-8-.5 1.5-1 2-2 2z" fill="#cf222e"/>
-      </g>
-    </g>
-    <text x="60" y="85" text-anchor="middle" class="streak-lbl">CURRENT STREAK</text>
-    
-    <!-- Total & Longest -->
-    <g transform="translate(130, 20)">
-      <text class="stat-lbl">Total:</text>
-      <text x="65" y="0" class="stat-val">267</text>
-      
-      <text y="28" class="stat-lbl">Longest:</text>
-      <text x="65" y="28" class="stat-val">4 days</text>
-    </g>
+  <g transform="translate(220, 85)">
+    <text x="0" y="12" fill="#656d76" font-size="11" font-weight="500">TOTAL</text>
+    <text x="0" y="35" fill="#24292f" font-size="22" font-weight="700">605</text>
+
+    <text x="80" y="12" fill="#cf222e" font-size="11" font-weight="600">CURRENT STREAK 🔥</text>
+    <text x="80" y="35" fill="#cf222e" font-size="22" font-weight="700">10 <tspan font-size="13" fill="#656d76">days</tspan></text>
+
+    <text x="0" y="70" fill="#656d76" font-size="11" font-weight="500">LONGEST</text>
+    <text x="0" y="90" fill="#24292f" font-size="18" font-weight="600">10 <tspan font-size="12" fill="#656d76">days</tspan></text>
   </g>
 
-  <!-- ==================== NOTA COM MEDIDOR CIRCULAR (RANK B-) ==================== -->
-  <g transform="translate(425, 147)" class="scale-in" style="animation-delay: 0.3s">
-    <!-- Gauge ring cinza de fundo -->
-    <circle cx="0" cy="0" r="24" fill="none" stroke="#ebf5ff" stroke-width="4.5"/>
-    <!-- Gauge ring azul animado -->
-    <circle class="gauge-ring" cx="0" cy="0" r="24" fill="none" stroke="url(#rankGrad)" stroke-width="4.5" stroke-linecap="round" transform="rotate(-90)"/>
-    <text x="0" y="7" text-anchor="middle" class="rank-letter">A+</text>
-    <text x="0" y="38" text-anchor="middle" class="meta-lbl">SCORE</text>
+  <!-- === RIGHT: Rank Gauge === -->
+  <line x1="415" y1="80" x2="415" y2="185" stroke="#d8dee4" stroke-width="0.6"/>
+
+  <g transform="translate(452, 130)">
+    <!-- Background ring -->
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#e8f1ff" stroke-width="4"/>
+    <!-- Animated gauge -->
+    <circle cx="0" cy="0" r="20" fill="none" stroke="#0969da" stroke-width="4"
+            stroke-dasharray="125.7" stroke-dashoffset="9.4"
+            stroke-linecap="round" transform="rotate(-90)">
+      <animate attributeName="stroke-dashoffset" from="125.7" to="9.4" dur="1.5s" fill="freeze"/>
+    </circle>
+    <text x="0" y="7" fill="#24292f" font-size="18" font-weight="800" text-anchor="middle">A+</text>
+    <text x="0" y="33" fill="#656d76" font-size="9" font-weight="600" text-anchor="middle">RANK</text>
   </g>
 
-  <!-- ==================== LADO DIREITO: GRÁFICO DINÂMICO DE CONTRIBUIÇÕES ==================== -->
-  <g transform="translate(490, 85)" class="fade-in" style="animation-delay: 0.35s">
-    <text class="chart-title">CONTRIBUTIONS OVER TIME</text>
-  </g>
-  
-  <!-- Área sob a curva animada -->
-  <path class="chart-bg" d="M 460.0 205.0 C 464.4 205.0, 464.4 205.0, 468.9 205.0 C 473.3 205.0, 473.3 205.0, 477.7 205.0 C 482.2 205.0, 482.2 205.0, 486.6 205.0 C 491.0 205.0, 491.0 205.0, 495.5 205.0 C 499.9 205.0, 499.9 205.0, 504.4 205.0 C 508.8 205.0, 508.8 205.0, 513.2 205.0 C 517.7 205.0, 517.7 205.0, 522.1 205.0 C 526.5 205.0, 526.5 205.0, 531.0 205.0 C 535.4 205.0, 535.4 205.0, 539.8 205.0 C 544.3 205.0, 544.3 205.0, 548.7 205.0 C 553.1 205.0, 553.1 205.0, 557.6 205.0 C 562.0 205.0, 562.0 205.0, 566.5 205.0 C 570.9 205.0, 570.9 205.0, 575.3 205.0 C 579.8 205.0, 579.8 205.0, 584.2 205.0 C 588.6 205.0, 588.6 205.0, 593.1 205.0 C 597.5 205.0, 597.5 205.0, 601.9 205.0 C 606.4 205.0, 606.4 205.0, 610.8 205.0 C 615.2 205.0, 615.2 205.0, 619.7 205.0 C 624.1 205.0, 624.1 205.0, 628.5 205.0 C 633.0 205.0, 633.0 205.0, 637.4 205.0 C 641.9 205.0, 641.9 205.0, 646.3 205.0 C 650.7 205.0, 650.7 205.0, 655.2 205.0 C 659.6 205.0, 659.6 205.0, 664.0 205.0 C 668.5 205.0, 668.5 205.0, 672.9 205.0 C 677.3 205.0, 677.3 205.0, 681.8 205.0 C 686.2 205.0, 686.2 205.0, 690.6 205.0 C 695.1 205.0, 695.1 205.0, 699.5 205.0 C 704.0 205.0, 704.0 205.0, 708.4 205.0 C 712.8 205.0, 712.8 203.0, 717.3 203.0 C 721.7 203.0, 721.7 152.7, 726.1 152.7 C 730.6 152.7, 730.6 110.0, 735.0 110.0 L 735.0 205 L 460.0 205 Z" fill="url(#chartGrad)"/>
-  
-  <!-- Linha do gráfico desenhando suavemente -->
-  <path class="chart-line" d="M 460.0 205.0 C 464.4 205.0, 464.4 205.0, 468.9 205.0 C 473.3 205.0, 473.3 205.0, 477.7 205.0 C 482.2 205.0, 482.2 205.0, 486.6 205.0 C 491.0 205.0, 491.0 205.0, 495.5 205.0 C 499.9 205.0, 499.9 205.0, 504.4 205.0 C 508.8 205.0, 508.8 205.0, 513.2 205.0 C 517.7 205.0, 517.7 205.0, 522.1 205.0 C 526.5 205.0, 526.5 205.0, 531.0 205.0 C 535.4 205.0, 535.4 205.0, 539.8 205.0 C 544.3 205.0, 544.3 205.0, 548.7 205.0 C 553.1 205.0, 553.1 205.0, 557.6 205.0 C 562.0 205.0, 562.0 205.0, 566.5 205.0 C 570.9 205.0, 570.9 205.0, 575.3 205.0 C 579.8 205.0, 579.8 205.0, 584.2 205.0 C 588.6 205.0, 588.6 205.0, 593.1 205.0 C 597.5 205.0, 597.5 205.0, 601.9 205.0 C 606.4 205.0, 606.4 205.0, 610.8 205.0 C 615.2 205.0, 615.2 205.0, 619.7 205.0 C 624.1 205.0, 624.1 205.0, 628.5 205.0 C 633.0 205.0, 633.0 205.0, 637.4 205.0 C 641.9 205.0, 641.9 205.0, 646.3 205.0 C 650.7 205.0, 650.7 205.0, 655.2 205.0 C 659.6 205.0, 659.6 205.0, 664.0 205.0 C 668.5 205.0, 668.5 205.0, 672.9 205.0 C 677.3 205.0, 677.3 205.0, 681.8 205.0 C 686.2 205.0, 686.2 205.0, 690.6 205.0 C 695.1 205.0, 695.1 205.0, 699.5 205.0 C 704.0 205.0, 704.0 205.0, 708.4 205.0 C 712.8 205.0, 712.8 203.0, 717.3 203.0 C 721.7 203.0, 721.7 152.7, 726.1 152.7 C 730.6 152.7, 730.6 110.0, 735.0 110.0" fill="none" stroke="#1a7f37" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- === Divider before graph === -->
+  <line x1="18" y1="195" x2="477" y2="195" stroke="#d8dee4" stroke-width="0.6"/>
+
+  <!-- === BOTTOM: Contribution Graph === -->
+  <text x="18" y="212" fill="#656d76" font-size="10" font-weight="600" letter-spacing="0.5">CONTRIBUTIONS OVER TIME</text>
+
+  <!-- Graph fill (animated) -->
+  <path d="M18.0,278.0 C23.9,278.0,23.9,278.0,29.8,278.0 C35.7,278.0,35.7,278.0,41.5,278.0 C47.4,278.0,47.4,278.0,53.3,278.0 C59.2,278.0,59.2,278.0,65.1,278.0 C71.0,278.0,71.0,278.0,76.8,278.0 C82.7,278.0,82.7,278.0,88.6,278.0 C94.5,278.0,94.5,278.0,100.4,278.0 C106.3,278.0,106.3,278.0,112.2,278.0 C118.0,278.0,118.0,278.0,123.9,278.0 C129.8,278.0,129.8,278.0,135.7,278.0 C141.6,278.0,141.6,278.0,147.5,278.0 C153.3,278.0,153.3,278.0,159.2,278.0 C165.1,278.0,165.1,278.0,171.0,278.0 C176.9,278.0,176.9,278.0,182.8,278.0 C188.7,278.0,188.7,278.0,194.5,278.0 C200.4,278.0,200.4,278.0,206.3,278.0 C212.2,278.0,212.2,278.0,218.1,278.0 C224.0,278.0,224.0,278.0,229.8,278.0 C235.7,278.0,235.7,278.0,241.6,278.0 C247.5,278.0,247.5,278.0,253.4,278.0 C259.3,278.0,259.3,278.0,265.2,278.0 C271.0,278.0,271.0,278.0,276.9,278.0 C282.8,278.0,282.8,278.0,288.7,278.0 C294.6,278.0,294.6,278.0,300.5,278.0 C306.3,278.0,306.3,278.0,312.2,278.0 C318.1,278.0,318.1,278.0,324.0,278.0 C329.9,278.0,329.9,278.0,335.8,278.0 C341.7,278.0,341.7,278.0,347.5,278.0 C353.4,278.0,353.4,278.0,359.3,278.0 C365.2,278.0,365.2,278.0,371.1,278.0 C377.0,278.0,377.0,278.0,382.8,278.0 C388.7,278.0,388.7,278.0,394.6,278.0 C400.5,278.0,400.5,278.0,406.4,278.0 C412.3,278.0,412.3,278.0,418.2,278.0 C424.0,278.0,424.0,278.0,429.9,278.0 C435.8,278.0,435.8,278.0,441.7,278.0 C447.6,278.0,447.6,277.9,453.5,277.9 C459.3,277.9,459.3,255.7,465.2,255.7 C471.1,255.7,471.1,210.0,477.0,210.0 L477.0,278 L18.0,278 Z" fill="#2da44e" opacity="0.12">
+    <animate attributeName="opacity" from="0" to="0.12" dur="1.8s" fill="freeze"/>
+  </path>
+
+  <!-- Graph line (animated draw) -->
+  <path d="M18.0,278.0 C23.9,278.0,23.9,278.0,29.8,278.0 C35.7,278.0,35.7,278.0,41.5,278.0 C47.4,278.0,47.4,278.0,53.3,278.0 C59.2,278.0,59.2,278.0,65.1,278.0 C71.0,278.0,71.0,278.0,76.8,278.0 C82.7,278.0,82.7,278.0,88.6,278.0 C94.5,278.0,94.5,278.0,100.4,278.0 C106.3,278.0,106.3,278.0,112.2,278.0 C118.0,278.0,118.0,278.0,123.9,278.0 C129.8,278.0,129.8,278.0,135.7,278.0 C141.6,278.0,141.6,278.0,147.5,278.0 C153.3,278.0,153.3,278.0,159.2,278.0 C165.1,278.0,165.1,278.0,171.0,278.0 C176.9,278.0,176.9,278.0,182.8,278.0 C188.7,278.0,188.7,278.0,194.5,278.0 C200.4,278.0,200.4,278.0,206.3,278.0 C212.2,278.0,212.2,278.0,218.1,278.0 C224.0,278.0,224.0,278.0,229.8,278.0 C235.7,278.0,235.7,278.0,241.6,278.0 C247.5,278.0,247.5,278.0,253.4,278.0 C259.3,278.0,259.3,278.0,265.2,278.0 C271.0,278.0,271.0,278.0,276.9,278.0 C282.8,278.0,282.8,278.0,288.7,278.0 C294.6,278.0,294.6,278.0,300.5,278.0 C306.3,278.0,306.3,278.0,312.2,278.0 C318.1,278.0,318.1,278.0,324.0,278.0 C329.9,278.0,329.9,278.0,335.8,278.0 C341.7,278.0,341.7,278.0,347.5,278.0 C353.4,278.0,353.4,278.0,359.3,278.0 C365.2,278.0,365.2,278.0,371.1,278.0 C377.0,278.0,377.0,278.0,382.8,278.0 C388.7,278.0,388.7,278.0,394.6,278.0 C400.5,278.0,400.5,278.0,406.4,278.0 C412.3,278.0,412.3,278.0,418.2,278.0 C424.0,278.0,424.0,278.0,429.9,278.0 C435.8,278.0,435.8,278.0,441.7,278.0 C447.6,278.0,447.6,277.9,453.5,277.9 C459.3,277.9,459.3,255.7,465.2,255.7 C471.1,255.7,471.1,210.0,477.0,210.0" fill="none" stroke="#1a7f37" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="800" stroke-dashoffset="800">
+    <animate attributeName="stroke-dashoffset" from="800" to="0" dur="2s" fill="freeze"/>
+  </path>
+
+  <!-- Dot at last point -->
+  <circle cx="477.0" cy="210.0" r="3" fill="#1a7f37">
+    <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.8s" fill="freeze"/>
+  </circle>
+  <circle cx="477.0" cy="210.0" r="6" fill="#1a7f37" opacity="0">
+    <animate attributeName="opacity" values="0;0.3;0" dur="2s" begin="2s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="3;8;3" dur="2s" begin="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- === Footer === -->
+  <line x1="18" y1="290" x2="477" y2="290" stroke="#d8dee4" stroke-width="0.4"/>
+  <text x="248" y="306" fill="#afb8c1" font-size="9" text-anchor="middle">Auto-generated daily · github.com/PepeHenrque</text>
 </svg>
