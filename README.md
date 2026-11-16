@@ -22,7 +22,7 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 
 ## Estatísticas
 
-![Stats](https://github-readme-stats-eight-theta.vercel.app/api?username=PepeHenrque&show_icons=true&theme=default&hide_border=true)
+![Stats](https://github-readme-stats.vercel.app/api?username=PepeHenrque&show_icons=true&theme=default&hide_border=true)
 
 ## Contribuições
 
