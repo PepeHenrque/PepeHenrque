@@ -1,4 +1,4 @@
-name: Generate Snake
+name: Generate Stats & Snake
 
 on:
   schedule:
@@ -15,18 +15,28 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: Platane/snk@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Generate Stats Card
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/generate_stats.py
+
+      - name: Generate Snake Animation
+        uses: Platane/snk@v3
         id: snake-gif
         with:
           github_user_name: PepeHenrque
           outputs: |
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
-      - uses: actions/upload-artifact@v4
-        with:
-          name: github-contribution-grid-snake.svg
-          path: dist/github-contribution-grid-snake.svg
-      - uses: peaceiris/actions-gh-pages@v3
+
+      - name: Deploy to Output Branch
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: output

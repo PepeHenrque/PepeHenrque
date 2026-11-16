@@ -22,7 +22,7 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 
 ## Estatísticas
 
-![Stats](https://github-readme-stats-fast.vercel.app/api?username=PepeHenrque&show_icons=true&theme=default&hide_border=true)
+![Stats](https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-stats.svg)
 
 ## Contribuições
 
