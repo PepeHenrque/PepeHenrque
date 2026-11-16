@@ -64,9 +64,7 @@ jobs:
       - name: Move metrics to dist
         run: |
           mkdir -p dist
-          if [ -f "github-metrics.svg" ]; then
-            cp github-metrics.svg dist/
-          fi
+          find . -name "github-metrics.svg" -exec cp {} dist/ \; || true
 
       - name: Deploy to Output Branch
         uses: peaceiris/actions-gh-pages@v3
