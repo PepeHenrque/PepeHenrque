@@ -1,0 +1,97 @@
+<svg width="680" height="205" viewBox="0 0 680 205" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font: 600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #58a6ff; }
+      .sub { font: 400 12px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #8b949e; }
+      .label { font: 400 13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #8b949e; }
+      .val { font: 600 14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #c9d1d9; }
+      
+      .streak-val { font: 700 20px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #58a6ff; }
+      .streak-lbl { font: 500 11px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #8b949e; }
+      
+      .rank-title { font: 600 10px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #8b949e; }
+      .rank-val { font: 800 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #2ea043; }
+    </style>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="0.5" y="0.5" width="679" height="204" rx="8" fill="#0d1117" stroke="#30363d"/>
+
+  <!-- Header Title -->
+  <g transform="translate(25, 30)">
+    <text class="title">Pedro Henrique</text>
+    <text x="0" y="18" class="sub">@PepeHenrque</text>
+  </g>
+
+  <!-- By Number of Contributions (Quadradinhos) -->
+  <g>
+    <rect x="475" y="32" width="9" height="9" rx="2" fill="#0e4429" /><rect x="486" y="32" width="9" height="9" rx="2" fill="#006d32" /><rect x="497" y="32" width="9" height="9" rx="2" fill="#26a641" /><rect x="508" y="32" width="9" height="9" rx="2" fill="#39d353" /><rect x="519" y="32" width="9" height="9" rx="2" fill="#0e4429" /><rect x="530" y="32" width="9" height="9" rx="2" fill="#006d32" /><rect x="541" y="32" width="9" height="9" rx="2" fill="#26a641" /><rect x="552" y="32" width="9" height="9" rx="2" fill="#39d353" /><rect x="563" y="32" width="9" height="9" rx="2" fill="#0e4429" /><rect x="574" y="32" width="9" height="9" rx="2" fill="#006d32" /><rect x="585" y="32" width="9" height="9" rx="2" fill="#26a641" /><rect x="596" y="32" width="9" height="9" rx="2" fill="#39d353" /><rect x="607" y="32" width="9" height="9" rx="2" fill="#0e4429" /><rect x="618" y="32" width="9" height="9" rx="2" fill="#006d32" /><rect x="629" y="32" width="9" height="9" rx="2" fill="#26a641" /><rect x="640" y="32" width="9" height="9" rx="2" fill="#39d353" />
+    <text x="655" y="55" text-anchor="end" class="sub">Contributed to 31 repos</text>
+  </g>
+
+  <!-- Linha divisória horizontal sutil -->
+  <line x1="25" y1="64" x2="655" y2="64" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Coluna 1: Stats Básicos (Stars, Commits, PRs, Issues) -->
+  <g transform="translate(25, 88)">
+    <!-- Stars -->
+    <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" fill="#58a6ff"/>
+    <text x="22" y="11" class="label">Total Stars Earned:</text>
+    <text x="170" y="11" class="val">28</text>
+  </g>
+
+  <g transform="translate(25, 114)">
+    <!-- Commits -->
+    <path d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z" fill="#58a6ff"/>
+    <text x="22" y="11" class="label">Total Commits:</text>
+    <text x="170" y="11" class="val">224</text>
+  </g>
+
+  <g transform="translate(25, 140)">
+    <!-- PRs -->
+    <path d="M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm0 10a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" fill="#58a6ff"/>
+    <text x="22" y="11" class="label">Total PRs:</text>
+    <text x="170" y="11" class="val">29</text>
+  </g>
+
+  <g transform="translate(25, 166)">
+    <!-- Issues -->
+    <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z" fill="#58a6ff"/>
+    <text x="22" y="11" class="label">Total Issues:</text>
+    <text x="170" y="11" class="val">0</text>
+  </g>
+
+  <!-- Divisória vertical -->
+  <line x1="230" y1="78" x2="230" y2="185" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Coluna 2: Streak Integrado (Total, Current Streak, Longest Streak) -->
+  <g transform="translate(255, 78)">
+    <!-- Total Contributions -->
+    <g transform="translate(0, 10)">
+      <text class="streak-val">267</text>
+      <text y="22" class="streak-lbl">TOTAL CONTRIBUTIONS</text>
+    </g>
+
+    <!-- Current Streak -->
+    <g transform="translate(140, 10)">
+      <text class="streak-val">3 days</text>
+      <text y="22" class="streak-lbl">CURRENT STREAK 🔥</text>
+    </g>
+
+    <!-- Longest Streak -->
+    <g transform="translate(0, 68)">
+      <text class="streak-val">4 days</text>
+      <text y="22" class="streak-lbl">LONGEST STREAK</text>
+    </g>
+  </g>
+
+  <!-- Divisória vertical antes do Rank -->
+  <line x1="535" y1="78" x2="535" y2="185" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Coluna 3: Card da Nota (Rank Oficial B-) -->
+  <g transform="translate(560, 80)">
+    <rect width="90" height="95" rx="8" fill="#161b22" stroke="#30363d"/>
+    <text x="45" y="28" text-anchor="middle" class="rank-title">RANK SCORE</text>
+    <text x="45" y="70" text-anchor="middle" class="rank-val">A+</text>
+  </g>
+</svg>
