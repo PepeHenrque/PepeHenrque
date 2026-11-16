@@ -31,9 +31,8 @@ jobs:
           user: PepeHenrque
           template: classic
           base: header, activity, community, repositories
-          base_metadata: no
           config_timezone: America/Sao_Paulo
-          config_padding: 0, 10%
+          config_padding: 0, 8%
           filename: github-metrics.svg
 
           # Linhas de código modificadas (adicionadas/removidas)
@@ -57,12 +56,10 @@ jobs:
           plugin_habits_facts: yes
           plugin_habits_charts: yes
 
-          # Gráfico isométrico de contribuições (muito criativo e visual)
-          plugin_isocalendar: yes
-          plugin_isocalendar_duration: full-year
-
-      - name: Move metrics to dist
+      - name: Remove Joined and Member lines from SVG
         run: |
+          sed -i '/Joined GitHub/d' github-metrics.svg || true
+          sed -i '/Member of/d' github-metrics.svg || true
           mkdir -p dist
           find . -name "github-metrics.svg" -exec cp {} dist/ \; || true
 
