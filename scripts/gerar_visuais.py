@@ -31,12 +31,10 @@ TEMAS = {
 
 # arquivo -> título que aparece depois do λ
 SECOES = {
-    "sobre": "sobre",
-    "projetos": "projetos",
-    "estudando": "estudando",
-    "stack": "stack",
+    "tecnologias": "tecnologias",
+    "estatisticas": "estatísticas",
     "contribuicoes": "contribuições",
-    "contato": "contato",
+    "projetos": "projetos",
 }
 
 
@@ -61,24 +59,25 @@ def titulo(texto, c):
     H = 44
     tx = 30
     fim = tx + mono_w(texto, 20) + 6
-    linha0 = fim + 24
+    x0 = fim + 24
+    comp = W - 2 - x0
     css = ("text{font-family:%s}"
            ".cur{animation:pisca 1.1s steps(1) infinite}"
            "@keyframes pisca{50%%{opacity:0}}"
-           ".corre{animation:corre 6s ease-in-out infinite}"
-           "@keyframes corre{0%%{transform:translateX(0)}50%%{transform:translateX(%dpx)}100%%{transform:translateX(0)}}"
-           "@media (prefers-reduced-motion:reduce){.cur,.corre{animation:none}}"
-           % (MONO, W - 2 - linha0 - 70))
+           ".brilho{stroke-dasharray:80 %d;animation:corre 5s linear infinite}"
+           "@keyframes corre{from{stroke-dashoffset:80}to{stroke-dashoffset:-%d}}"
+           "@media (prefers-reduced-motion:reduce){.cur,.brilho{animation:none}}"
+           % (MONO, comp, comp))
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">'
             '<style>%s</style>'
             '%s%s'
             '<rect class="cur" x="%g" y="13" width="10" height="20" rx="1" fill="%s"/>'
-            '<path d="M%g 23H%d" stroke="%s"/>'
-            '<rect class="corre" x="%g" y="22" width="70" height="2" rx="1" fill="%s"/>'
+            '<line x1="%g" y1="23" x2="%d" y2="23" stroke="%s" stroke-width="1.5"/>'
+            '<line class="brilho" x1="%g" y1="23" x2="%d" y2="23" stroke="%s" stroke-width="2" stroke-linecap="round"/>'
             '</svg>'
             % (W, H, W, H, escape(texto), css,
-               T(2, 30, "λ", 22, c["laranja"], 700), T(tx, 30, texto, 20, c["azul"], 700),
-               fim, c["laranja"], linha0, W - 2, c["linha"], linha0, c["azul"]))
+               T(2, 30, "λ", 22, c["laranja"], 700), T(tx, 30, texto, 20, c["texto"], 700),
+               fim, c["laranja"], x0, W - 2, c["linha"], x0, W - 2, c["texto"]))
 
 
 # --------------------------------------------------------------------------- cartões de projeto
@@ -147,7 +146,7 @@ def cartao(info, c):
          '<rect x=".5" y=".5" width="%d" height="%d" rx="8" fill="%s" stroke="%s"/>' % (CW - 1, CH - 1, c["card"], c["borda"])]
     direita = CW - 18
     if lang.get("name"):
-        ln = caber(lang["name"], 12, 110)
+        ln = caber(lang["name"], 12, 150)
         s.append(T(direita, 32, ln, 12, c["fraco"], 400, "end"))
         s.append('<circle cx="%g" cy="28" r="5" fill="%s"/>' % (direita - mono_w(ln, 12) - 10, lang.get("color") or c["fraco"]))
         direita -= mono_w(ln, 12) + 24
@@ -170,7 +169,7 @@ def slug(info):
 
 
 def bloco_readme(projetos):
-    linhas = ['<p align="center">']
+    linhas = ['<p align="left">']
     for info in projetos:
         linhas.append('<a href="%s"><picture>\n'
                       '  <source media="(prefers-color-scheme: dark)" srcset="%sprojeto-%s-dark.svg">\n'
