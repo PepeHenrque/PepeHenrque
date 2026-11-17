@@ -24,6 +24,7 @@ jobs:
       - name: Generate Custom Stats Card
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
         run: |
           python scripts/generate_card.py
           mkdir -p dist

@@ -1,277 +1,414 @@
-import os
+"""Gera o cartão de estatísticas do perfil (github-stats.svg), 800x400, fundo branco.
+
+Uso:
+    python scripts/generate_card.py           # dados reais (precisa de GITHUB_TOKEN ou METRICS_TOKEN)
+    python scripts/generate_card.py --mock    # dados de exemplo, para testar sem token
+    python scripts/generate_card.py --mock --big   # valores grandes, para testar o layout
+
+Só biblioteca padrão.
+"""
 import json
+import math
+import os
+import sys
 import urllib.request
-from datetime import datetime
+from datetime import date, datetime, timedelta, timezone
+from xml.sax.saxutils import escape
 
-USERNAME = "PepeHenrque"
-TOKEN = os.environ.get("GITHUB_TOKEN", "")
+USER = "PepeHenrque"
+NAME = "Pedro Henrique"
+OUT = "github-stats.svg"
+TZ = timezone(timedelta(hours=-3))          # America/Sao_Paulo (sem horário de verão desde 2019)
 
-def fetch_events():
-    headers = {"User-Agent": "PepeCard"}
-    if TOKEN:
-        headers["Authorization"] = f"Bearer {TOKEN}"
-    try:
-        req = urllib.request.Request(f"https://api.github.com/users/{USERNAME}/events/public", headers=headers)
-        with urllib.request.urlopen(req) as resp:
-            events = json.loads(resp.read().decode("utf-8"))
-            repo_counts = {}
-            recent_lang = "TypeScript"
-            for e in events:
-                rname = e.get("repo", {}).get("name", "")
-                if rname and rname != f"{USERNAME}/{USERNAME}":
-                    repo_counts[rname] = repo_counts.get(rname, 0) + 1
-            top_repo = max(repo_counts.items(), key=lambda x: x[1])[0] if repo_counts else ""
-            # Get language from top repo
-            if top_repo:
-                try:
-                    req2 = urllib.request.Request(f"https://api.github.com/repos/{top_repo}/languages", headers=headers)
-                    with urllib.request.urlopen(req2) as resp2:
-                        langs = json.loads(resp2.read().decode("utf-8"))
-                        if langs:
-                            recent_lang = max(langs.items(), key=lambda x: x[1])[0]
-                except:
-                    pass
-            return top_repo.split("/")[-1] if "/" in top_repo else top_repo, recent_lang
-    except Exception as e:
-        print("Events error:", e)
-    return "apts", "TypeScript"
+W, H = 800, 400
+PAD = 24
+FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
+C_TEXT, C_MUTED, C_LINE, C_BORDER = "#1f2328", "#656d76", "#d8dee4", "#d0d7de"
+C_BLUE, C_GREEN, C_ORANGE = "#0969da", "#1a7f37", "#e16f24"
+MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
 
-def get_stats():
-    stars, commits, prs, issues, contributed = 28, 224, 29, 0, 31
-    days = []
 
-    if TOKEN:
-        gql = """query($login:String!){user(login:$login){
-            repositoriesContributedTo(first:1,contributionTypes:[COMMIT,ISSUE,PULL_REQUEST,REPOSITORY]){totalCount}
-            pullRequests(first:1){totalCount}
-            issues(first:1){totalCount}
-            contributionsCollection{
-                totalCommitContributions restrictedContributionsCount
-                contributionCalendar{totalContributions weeks{contributionDays{contributionCount}}}
-            }
-            repositories(first:100,ownerAffiliations:OWNER,isFork:false){nodes{stargazerCount}}
-        }}"""
-        try:
-            data = json.dumps({"query": gql, "variables": {"login": USERNAME}}).encode()
-            req = urllib.request.Request("https://api.github.com/graphql", data=data, headers={
-                "User-Agent": "PepeCard", "Content-Type": "application/json",
-                "Authorization": f"Bearer {TOKEN}"
-            })
-            with urllib.request.urlopen(req) as resp:
-                u = json.loads(resp.read())["data"]["user"]
-                c = u["contributionsCollection"]
-                commits = c["totalCommitContributions"] + c["restrictedContributionsCount"]
-                prs = u["pullRequests"]["totalCount"]
-                issues = u["issues"]["totalCount"]
-                contributed = u["repositoriesContributedTo"]["totalCount"]
-                stars = sum(r["stargazerCount"] for r in u["repositories"]["nodes"])
-                for w in c["contributionCalendar"]["weeks"]:
-                    for d in w["contributionDays"]:
-                        days.append(d["contributionCount"])
-        except Exception as e:
-            print("GQL error:", e)
+# --------------------------------------------------------------------------- dados
+QUERY = """
+query($login: String!) {
+  user(login: $login) {
+    followers { totalCount }
+    pullRequests { totalCount }
+    issues { totalCount }
+    repositories(first: 100, ownerAffiliations: OWNER, isFork: false) {
+      nodes { stargazerCount }
+    }
+    recent: repositories(first: 15, ownerAffiliations: [OWNER, COLLABORATOR],
+                         orderBy: {field: PUSHED_AT, direction: DESC}) {
+      nodes { name nameWithOwner primaryLanguage { name color } }
+    }
+    contributionsCollection {
+      totalCommitContributions
+      totalPullRequestReviewContributions
+      commitContributionsByRepository(maxRepositories: 10) {
+        repository { name nameWithOwner }
+        contributions { totalCount }
+      }
+      contributionCalendar {
+        totalContributions
+        weeks { contributionDays { date contributionCount } }
+      }
+    }
+  }
+}
+"""
 
-    if not days:
-        days = [0]*300 + [1, 2, 0, 5, 12, 25, 45, 60, 40, 30, 85, 140, 160]
 
-    # Rank
-    sc = commits*2 + prs*3 + issues*1 + stars*4 + contributed*3
-    if sc >= 1000: rank = "S"
-    elif sc >= 500: rank = "A+"
-    elif sc >= 250: rank = "A"
-    elif sc >= 100: rank = "B+"
-    elif sc >= 50: rank = "B"
-    else: rank = "B-"
-
-    # Streak
-    total_c = sum(days)
-    cur, lon, t = 0, 0, 0
-    for v in days:
-        if v > 0:
-            t += 1
-            if t > lon: lon = t
-        else:
-            t = 0
-    for v in reversed(days):
-        if v > 0: cur += 1
-        elif cur > 0: break
-    cur = max(cur, 0)
-    lon = max(lon, cur)
-
-    # Sparkline: aggregate to 40 points
-    step = max(1, len(days) // 40)
-    pts = []
-    for i in range(0, len(days), step):
-        pts.append(sum(days[i:i+step]))
-    pts = pts[-40:]
-
-    top_repo, recent_lang = fetch_events()
-
+def fetch_real():
+    token = os.environ.get("METRICS_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    if not token:
+        sys.exit("Sem token: defina GITHUB_TOKEN/METRICS_TOKEN ou use --mock.")
+    body = json.dumps({"query": QUERY, "variables": {"login": USER}}).encode()
+    req = urllib.request.Request("https://api.github.com/graphql", data=body, headers={
+        "Authorization": "Bearer " + token, "Content-Type": "application/json", "User-Agent": "pepe-card"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        payload = json.loads(r.read())
+    if payload.get("errors"):
+        sys.exit("Erro da API: %s" % payload["errors"])
+    u = payload["data"]["user"]
+    cc = u["contributionsCollection"]
+    days = [(date.fromisoformat(d["date"]), d["contributionCount"])
+            for w in cc["contributionCalendar"]["weeks"] for d in w["contributionDays"]]
+    own = USER + "/" + USER
+    repos = [(x["repository"]["name"], x["contributions"]["totalCount"])
+             for x in cc["commitContributionsByRepository"] if x["repository"]["nameWithOwner"] != own]
+    lang = None
+    for n in u["recent"]["nodes"]:
+        if n["nameWithOwner"] != own and n["primaryLanguage"]:
+            lang = (n["primaryLanguage"]["name"], n["primaryLanguage"]["color"] or C_MUTED, n["name"])
+            break
     return {
-        "stars": stars, "commits": commits, "prs": prs, "issues": issues,
-        "contributed": contributed, "rank": rank,
-        "total": total_c, "cur_streak": cur, "lon_streak": lon,
-        "pts": pts, "top_repo": top_repo, "recent_lang": recent_lang
+        "total": cc["contributionCalendar"]["totalContributions"],
+        "commits": cc["totalCommitContributions"],
+        "reviews": cc["totalPullRequestReviewContributions"],
+        "prs": u["pullRequests"]["totalCount"],
+        "issues": u["issues"]["totalCount"],
+        "stars": sum(n["stargazerCount"] for n in u["repositories"]["nodes"]),
+        "followers": u["followers"]["totalCount"],
+        "days": days,
+        "repos": sorted(repos, key=lambda t: -t[1])[:3],
+        "lang": lang,
     }
 
-def make_svg(d):
-    # --- Graph path (smooth cubic bezier) ---
-    pts = d["pts"]
-    mx = max(pts) if pts and max(pts) > 0 else 1
-    gx, gy, gw, gh = 18, 278, 459, 68
-    st = gw / max(1, len(pts)-1)
-    coords = [(gx + i*st, gy - (v/mx)*gh) for i, v in enumerate(pts)]
-    
-    path = f"M{coords[0][0]:.1f},{coords[0][1]:.1f}"
-    for i in range(1, len(coords)):
-        p, c = coords[i-1], coords[i]
-        mx1 = p[0] + (c[0]-p[0])/2
-        path += f" C{mx1:.1f},{p[1]:.1f},{mx1:.1f},{c[1]:.1f},{c[0]:.1f},{c[1]:.1f}"
-    fill_path = f"{path} L{coords[-1][0]:.1f},{gy} L{coords[0][0]:.1f},{gy} Z"
 
-    # --- Rank gauge arc ---
-    # SVG circle arc: r=20, circumference=125.66
-    circ = 125.66
-    # Score percentage (rough)
-    sc = d["commits"]*2 + d["prs"]*3 + d["issues"]*1 + d["stars"]*4 + d["contributed"]*3
-    pct = min(sc / 800, 1.0)  # normalize to 800 as "S" threshold
-    filled = circ * pct
-    gap = circ - filled
+def fetch_mock(big=False):
+    today = datetime.now(TZ).date()
+    start = today - timedelta(days=364)
+    days = []
+    for i in range(365):
+        d = start + timedelta(days=i)
+        t = i / 364
+        base = 0 if t < 0.55 else (t - 0.55) * 9
+        wave = max(0.0, math.sin(i / 9.0)) * base
+        n = int(round(wave + (3 if i % 11 == 0 and t > 0.4 else 0)))
+        days.append((d, n))
+    # sequência atual de 3 dias, com um dia vazio antes
+    days[-4] = (days[-4][0], 0)
+    for k in (1, 2, 3):
+        days[-k] = (days[-k][0], max(1, days[-k][1]))
+    if big:
+        return {"total": 12345, "commits": 12345, "reviews": 900, "prs": 4321, "issues": 987, "stars": 54321,
+                "followers": 9999, "days": [(d, n * 9) for d, n in days],
+                "repos": [("um-repositorio-com-nome-muito-muito-comprido", 4321), ("compiladores", 1200),
+                          ("arduino-estacao-meteorologica", 640)],
+                "lang": ("Jupyter Notebook", "#DA5B0B", "repositorio-com-nome-enorme-de-teste")}
+    return {"total": 279, "commits": 222, "reviews": 0, "prs": 29, "issues": 3, "stars": 24, "followers": 12,
+            "days": days, "repos": [("quantum-ai", 96), ("terraform-lab", 54), ("arduino-projetos", 31)],
+            "lang": ("Python", "#3572A5", "quantum-ai")}
 
-    # --- Contribution squares (16 blocks) ---
-    greens = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"]
-    blocks = ""
-    for i in range(16):
-        color = greens[min(4, max(1, (i % 4) + 1))]
-        bx = 310 + i * 11
-        blocks += f'<rect x="{bx}" y="13" width="8" height="8" rx="2" fill="{color}"/>'
 
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="495" height="360" viewBox="0 0 495 360">
-  <style>
-    @keyframes draw {{ from {{ stroke-dashoffset: 800 }} to {{ stroke-dashoffset: 0 }} }}
-    @keyframes fill-up {{ from {{ opacity: 0 }} to {{ opacity: 1 }} }}
-    @keyframes gauge {{ from {{ stroke-dashoffset: {circ:.1f} }} to {{ stroke-dashoffset: {gap:.1f} }} }}
-    text {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }}
-  </style>
+# --------------------------------------------------------------------------- cálculos
+def streaks(days):
+    today = datetime.now(TZ).date()
+    days = [(d, n) for d, n in sorted(days) if d <= today]
+    # atual: conta para trás a partir de hoje; se hoje ainda está em 0, começa de ontem
+    cur, cur_start, cur_end = 0, None, None
+    i = len(days) - 1
+    if i >= 0 and days[i][1] == 0:
+        i -= 1
+    while i >= 0 and days[i][1] > 0:
+        cur += 1
+        cur_start = days[i][0]
+        cur_end = cur_end or days[i][0]
+        i -= 1
+    best, best_rng, run, run_start = 0, (None, None), 0, None
+    for d, n in days:
+        if n > 0:
+            run_start = run_start or d
+            run += 1
+            if run > best:
+                best, best_rng = run, (run_start, d)
+        else:
+            run, run_start = 0, None
+    return (cur, cur_start, cur_end), (best, *best_rng)
 
-  <!-- Background -->
-  <rect x="0.5" y="0.5" width="494" height="359" rx="6" fill="#fff" stroke="#d0d7de"/>
 
-  <!-- === TOP BAR: Name + Squares === -->
-  <text x="18" y="27" fill="#0969da" font-weight="700" font-size="16">Pedro Henrique</text>
-  <text x="155" y="27" fill="#656d76" font-weight="400" font-size="12">@PepeHenrque</text>
-  {blocks}
-  <text x="486" y="27" fill="#656d76" font-size="10" text-anchor="end">{d['contributed']} repos</text>
+def rank(s):
+    """mesma ideia do github-readme-stats: percentil a partir de CDFs ponderadas."""
+    exp_cdf = lambda x: 1 - 2 ** (-x)
+    log_cdf = lambda x: x / (1 + x)
+    parts = [(2, exp_cdf(s["commits"] / 250)), (3, exp_cdf(s["prs"] / 50)), (1, exp_cdf(s["issues"] / 25)),
+             (1, exp_cdf(s["reviews"] / 2)), (4, log_cdf(s["stars"] / 50)), (1, log_cdf(s["followers"] / 10))]
+    pct = (1 - sum(w * c for w, c in parts) / sum(w for w, _ in parts)) * 100
+    for lim, lvl in ((1, "S"), (12.5, "A+"), (25, "A"), (37.5, "A-"), (50, "B+"), (62.5, "B"), (75, "B-"),
+                     (87.5, "C+"), (100, "C")):
+        if pct <= lim:
+            return lvl, pct
+    return "C", pct
 
-  <!-- Divider -->
-  <line x1="18" y1="38" x2="477" y2="38" stroke="#d8dee4" stroke-width="0.6"/>
 
-  <!-- === BADGES: Active Repo + Recent Lang === -->
-  <rect x="18" y="46" width="180" height="20" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.6"/>
-  <text x="30" y="60" fill="#656d76" font-size="11">📦 Active: <tspan fill="#24292f" font-weight="600">{d['top_repo']}</tspan></text>
+def weekly(days):
+    days = sorted(days)[-364:]
+    weeks = [days[i:i + 7] for i in range(0, len(days), 7)]
+    return [(w[0][0], sum(n for _, n in w)) for w in weeks]
 
-  <rect x="206" y="46" width="160" height="20" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="0.6"/>
-  <text x="218" y="60" fill="#656d76" font-size="11">🔵 Recent: <tspan fill="#24292f" font-weight="600">{d['recent_lang']}</tspan></text>
 
-  <!-- === LEFT COLUMN: Stats === -->
-  <!-- Stars -->
-  <g transform="translate(18, 86)">
-    <circle cx="7" cy="7" r="7" fill="#faf0c8"/>
-    <text x="7" y="10.5" fill="#9a6700" font-size="9" text-anchor="middle" font-weight="700">★</text>
-    <text x="20" y="11" fill="#656d76" font-size="13">Stars</text>
-    <text x="75" y="11" fill="#24292f" font-size="13" font-weight="600">{d['stars']}</text>
-  </g>
+# --------------------------------------------------------------------------- helpers de desenho
+def fmt(n):
+    return "{:,}".format(n).replace(",", ".")
 
-  <!-- Commits -->
-  <g transform="translate(18, 112)">
-    <circle cx="7" cy="7" r="7" fill="#ddf4ff"/>
-    <text x="7" y="11" fill="#0969da" font-size="9" text-anchor="middle" font-weight="700">⊙</text>
-    <text x="20" y="11" fill="#656d76" font-size="13">Commits</text>
-    <text x="90" y="11" fill="#24292f" font-size="13" font-weight="600">{d['commits']}</text>
-  </g>
 
-  <!-- PRs -->
-  <g transform="translate(18, 138)">
-    <circle cx="7" cy="7" r="7" fill="#dafbe1"/>
-    <text x="7" y="11" fill="#1a7f37" font-size="9" text-anchor="middle" font-weight="700">⑂</text>
-    <text x="20" y="11" fill="#656d76" font-size="13">Pull Requests</text>
-    <text x="120" y="11" fill="#24292f" font-size="13" font-weight="600">{d['prs']}</text>
-  </g>
+def dt(d):
+    return "%d %s" % (d.day, MESES[d.month - 1]) if d else "–"
 
-  <!-- Issues -->
-  <g transform="translate(18, 164)">
-    <circle cx="7" cy="7" r="7" fill="#ffebe9"/>
-    <text x="7" y="11" fill="#cf222e" font-size="9" text-anchor="middle" font-weight="700">!</text>
-    <text x="20" y="11" fill="#656d76" font-size="13">Issues</text>
-    <text x="75" y="11" fill="#24292f" font-size="13" font-weight="600">{d['issues']}</text>
-  </g>
 
-  <!-- === CENTER: Streak === -->
-  <!-- Vertical divider -->
-  <line x1="165" y1="80" x2="165" y2="185" stroke="#d8dee4" stroke-width="0.6"/>
+def text_w(s, size, bold=False):
+    """largura aproximada em px (fontes de sistema)."""
+    k = 0.60 if bold else 0.56
+    narrow = sum(1 for c in s if c in "iljtf.,:;|!'I ·")
+    wide = sum(1 for c in s if c in "mwMW@%")
+    return size * (k * (len(s) - narrow - wide) + 0.30 * narrow + 0.85 * wide)
 
-  <g transform="translate(220, 85)">
-    <text x="0" y="12" fill="#656d76" font-size="11" font-weight="500">TOTAL</text>
-    <text x="0" y="35" fill="#24292f" font-size="22" font-weight="700">{d['total']}</text>
 
-    <text x="80" y="12" fill="#cf222e" font-size="11" font-weight="600">CURRENT STREAK 🔥</text>
-    <text x="80" y="35" fill="#cf222e" font-size="22" font-weight="700">{d['cur_streak']} <tspan font-size="13" fill="#656d76">days</tspan></text>
+def fit(s, size, max_w, bold=False):
+    if text_w(s, size, bold) <= max_w:
+        return s
+    while s and text_w(s + "…", size, bold) > max_w:
+        s = s[:-1]
+    return s.rstrip("-_ ") + "…"
 
-    <text x="0" y="70" fill="#656d76" font-size="11" font-weight="500">LONGEST</text>
-    <text x="0" y="90" fill="#24292f" font-size="18" font-weight="600">{d['lon_streak']} <tspan font-size="12" fill="#656d76">days</tspan></text>
-  </g>
 
-  <!-- === RIGHT: Rank Gauge === -->
-  <line x1="415" y1="80" x2="415" y2="185" stroke="#d8dee4" stroke-width="0.6"/>
+def T(x, y, s, size=13, color=C_TEXT, weight=400, anchor="start", cls=""):
+    c = ' class="%s"' % cls if cls else ""
+    return ('<text x="%g" y="%g" font-size="%g" fill="%s" font-weight="%d" text-anchor="%s"%s>%s</text>'
+            % (x, y, size, color, weight, anchor, c, escape(s)))
 
-  <g transform="translate(452, 130)">
-    <!-- Background ring -->
-    <circle cx="0" cy="0" r="20" fill="none" stroke="#e8f1ff" stroke-width="4"/>
-    <!-- Animated gauge -->
-    <circle cx="0" cy="0" r="20" fill="none" stroke="#0969da" stroke-width="4"
-            stroke-dasharray="{circ:.1f}" stroke-dashoffset="{gap:.1f}"
-            stroke-linecap="round" transform="rotate(-90)">
-      <animate attributeName="stroke-dashoffset" from="{circ:.1f}" to="{gap:.1f}" dur="1.5s" fill="freeze"/>
-    </circle>
-    <text x="0" y="7" fill="#24292f" font-size="18" font-weight="800" text-anchor="middle">{d['rank']}</text>
-    <text x="0" y="33" fill="#656d76" font-size="9" font-weight="600" text-anchor="middle">RANK</text>
-  </g>
 
-  <!-- === Divider before graph === -->
-  <line x1="18" y1="195" x2="477" y2="195" stroke="#d8dee4" stroke-width="0.6"/>
+# ícones 16x16 desenhados com traço (estilo Octicons)
+def icon(name, x, y, color=C_MUTED):
+    g = '<g transform="translate(%g %g)" fill="none" stroke="%s" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' % (x, y, color)
+    body = {
+        "contrib": '<rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/>'
+                   '<rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1" fill="%s"/>' % color,
+        "commit": '<circle cx="8" cy="8" r="3"/><path d="M1 8h4M11 8h4"/>',
+        "pr": '<circle cx="4" cy="3.5" r="1.8"/><circle cx="4" cy="12.5" r="1.8"/><circle cx="12" cy="12.5" r="1.8"/>'
+              '<path d="M4 5.3v5.4M12 10.7V6.5a2 2 0 0 0-2-2H7.5M9 3 7.5 4.5 9 6"/>',
+        "issue": '<circle cx="8" cy="8" r="6.2"/><circle cx="8" cy="8" r="1" fill="%s"/>' % color,
+        "star": '<path d="M8 1.8l1.9 3.9 4.2.6-3 3 .7 4.2L8 11.5l-3.8 2 .7-4.2-3-3 4.2-.6z"/>',
+        "code": '<path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4"/>',
+        "repo": '<path d="M3 13.5V3a1.5 1.5 0 0 1 1.5-1.5H13v10H4.5A1.5 1.5 0 0 0 3 13a1.5 1.5 0 0 0 1.5 1.5H13"/>',
+        "trophy": '<path d="M4.5 2h7v4a3.5 3.5 0 0 1-7 0zM4.5 3.5H2v1a2.5 2.5 0 0 0 2.6 2.5M11.5 3.5H14v1a2.5 2.5 0 0 1-2.6 2.5M8 9.5v3M5.5 14h5"/>',
+        "calendar": '<rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3"/>',
+    }[name]
+    return g + body + "</g>"
 
-  <!-- === BOTTOM: Contribution Graph === -->
-  <text x="18" y="212" fill="#656d76" font-size="10" font-weight="600" letter-spacing="0.5">CONTRIBUTIONS OVER TIME</text>
 
-  <!-- Graph fill (animated) -->
-  <path d="{fill_path}" fill="#2da44e" opacity="0.12">
-    <animate attributeName="opacity" from="0" to="0.12" dur="1.8s" fill="freeze"/>
-  </path>
+FLAME = ('<path d="M8 1.2c.6 2.3 3.8 3.9 3.8 7.6A3.8 3.8 0 0 1 4.2 9c0-1.6.8-2.6 1.6-3.4.1 1.1.6 1.9 1.4 2.1'
+         '-.4-2.4.1-4.6.8-6.5z" fill="%s"/><path d="M8 8.2c.3 1 1.6 1.6 1.6 3a1.6 1.6 0 0 1-3.2.1c0-.8.5-1.3 1-1.7'
+         '.1.4.3.6.6.7-.1-.8 0-1.5 0-2.1z" fill="#fff3"/>' % C_ORANGE)
 
-  <!-- Graph line (animated draw) -->
-  <path d="{path}" fill="none" stroke="#1a7f37" stroke-width="2" stroke-linecap="round"
-        stroke-dasharray="800" stroke-dashoffset="800">
-    <animate attributeName="stroke-dashoffset" from="800" to="0" dur="2s" fill="freeze"/>
-  </path>
 
-  <!-- Dot at last point -->
-  <circle cx="{coords[-1][0]:.1f}" cy="{coords[-1][1]:.1f}" r="3" fill="#1a7f37">
-    <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.8s" fill="freeze"/>
-  </circle>
-  <circle cx="{coords[-1][0]:.1f}" cy="{coords[-1][1]:.1f}" r="6" fill="#1a7f37" opacity="0">
-    <animate attributeName="opacity" values="0;0.3;0" dur="2s" begin="2s" repeatCount="indefinite"/>
-    <animate attributeName="r" values="3;8;3" dur="2s" begin="2s" repeatCount="indefinite"/>
-  </circle>
+# --------------------------------------------------------------------------- SVG
+def build(s):
+    (cur, cs, ce), (best, bs, be) = streaks(s["days"])
+    lvl, pct = rank(s)
+    now = datetime.now(TZ)
+    out = []
+    add = out.append
 
-  <!-- === Footer === -->
-  <line x1="18" y1="290" x2="477" y2="290" stroke="#d8dee4" stroke-width="0.4"/>
-  <text x="248" y="306" fill="#afb8c1" font-size="9" text-anchor="middle">Auto-generated daily · github.com/PepeHenrque</text>
-</svg>'''
-    return svg
+    # ---- cabeçalho
+    add('<g class="in d0">')
+    add(T(PAD, 46, NAME, 20, C_TEXT, 600))
+    add(T(PAD + text_w(NAME, 20, True) + 10, 46, "@" + USER, 14, C_MUTED))
+    add('</g>')
+    add('<path d="M%d 64H%d" stroke="%s"/>' % (PAD, W - PAD, C_LINE))
+
+    # ---- métricas (coluna esquerda)
+    LX, VX, ROW, Y0 = PAD, 196, 24, 92
+    rows = [("contrib", "Contribuições (ano)", fmt(s["total"])),
+            ("commit", "Commits (ano)", fmt(s["commits"])),
+            ("pr", "Pull Requests", fmt(s["prs"])),
+            ("issue", "Issues", fmt(s["issues"])),
+            ("star", "Stars recebidas", fmt(s["stars"]))]
+    add('<g class="in d1">')
+    for i, (ic, label, val) in enumerate(rows):
+        y = Y0 + i * ROW
+        add(icon(ic, LX, y - 12))
+        add(T(LX + 26, y, label, 13, C_MUTED))
+        add(T(VX, y, val, 14, C_TEXT, 600))
+    y = Y0 + 5 * ROW
+    add(icon("code", LX, y - 12))
+    add(T(LX + 26, y, "Linguagem recente", 13, C_MUTED))
+    if s["lang"]:
+        name, color, repo = s["lang"]
+        add('<circle cx="%g" cy="%g" r="5" fill="%s"/>' % (VX + 5, y - 4.5, color))
+        nm = fit(name, 14, 130, True)
+        add(T(VX + 16, y, nm, 14, C_TEXT, 600))
+        add(T(VX + 16 + text_w(nm, 14, True) + 8, y, fit(repo, 12, 360 - VX - 24 - text_w(nm, 14, True) - 8 + 32),
+              12, C_MUTED))
+    else:
+        add(T(VX, y, "–", 14, C_MUTED))
+    add('</g>')
+    add('<path d="M400 80V212" stroke="%s"/>' % C_LINE)
+
+    # ---- coluna direita: nota | sequência atual | maior sequência (estilo streak-stats)
+    CY, RR = 136, 38
+    cols = (468, 588, 712)
+    circ = 2 * math.pi * RR
+
+    # nota
+    RX = cols[0]
+    fill = max(0.02, min(1.0, (100 - pct) / 100))
+    add('<g class="in d2">')
+    add('<circle cx="%g" cy="%g" r="%g" fill="none" stroke="#eaeef2" stroke-width="7"/>' % (RX, CY, RR))
+    add('<circle class="ring" cx="%g" cy="%g" r="%g" fill="none" stroke="%s" stroke-width="7" stroke-linecap="round"'
+        ' stroke-dasharray="%.2f" style="--c:%.2f;--o:%.2f" stroke-dashoffset="%.2f" transform="rotate(-90 %g %g)"/>'
+        % (RX, CY, RR, C_BLUE, circ, circ, circ * (1 - fill), circ * (1 - fill), RX, CY))
+    add(T(RX, CY + 9, lvl, 26, C_TEXT, 700, "middle"))
+    add(T(RX, CY + RR + 24, "Nota", 13, C_BLUE, 600, "middle"))
+    add(T(RX, CY + RR + 42, "top %.0f%%" % max(1, pct), 11, C_MUTED, anchor="middle"))
+    add('</g>')
+
+    # sequência atual: anel laranja com a chama no topo
+    SX = cols[1]
+    add('<g class="in d3">')
+    add('<circle cx="%g" cy="%g" r="%g" fill="none" stroke="%s" stroke-width="5"/>' % (SX, CY, RR, C_ORANGE))
+    add('<circle cx="%g" cy="%g" r="13" fill="#fff"/>' % (SX, CY - RR))          # abre espaço no anel
+    add('<g transform="translate(%g %g) scale(1.5)"><g class="flame">%s</g></g>' % (SX - 12, CY - RR - 14, FLAME))
+    add(T(SX, CY + 10, fmt(cur), 30, C_TEXT, 700, "middle"))
+    add(T(SX, CY + RR + 24, "Sequência atual", 13, C_ORANGE, 600, "middle"))
+    add(T(SX, CY + RR + 42, ("%s – %s" % (dt(cs), dt(ce))) if cur else "comece hoje", 11, C_MUTED, anchor="middle"))
+    add('</g>')
+
+    # maior sequência
+    BX = cols[2]
+    add('<g class="in d3">')
+    add(T(BX, CY + 10, fmt(best), 30, C_TEXT, 700, "middle"))
+    add(T(BX, CY + RR + 24, "Maior sequência", 13, C_TEXT, 400, "middle"))
+    add(T(BX, CY + RR + 42, ("%s – %s" % (dt(bs), dt(be))) if best else "–", 11, C_MUTED, anchor="middle"))
+    add('</g>')
+    for x in ((cols[0] + cols[1]) / 2, (cols[1] + cols[2]) / 2):
+        add('<path d="M%g 92V212" stroke="%s"/>' % (x, C_LINE))
+
+    add('<path d="M%d 232H%d" stroke="%s"/>' % (PAD, W - PAD, C_LINE))
+
+    # ---- onde estou contribuindo (esquerda)
+    add('<g class="in d4">')
+    add(icon("repo", PAD, 249))
+    add(T(PAD + 24, 261, "Onde estou contribuindo", 13, C_TEXT, 600))
+    top = max([n for _, n in s["repos"]] or [1])
+    BW = 336 - PAD
+    for i, (name, n) in enumerate(s["repos"]):
+        y = 290 + i * 30
+        num = fmt(n) + " commits"
+        add(T(PAD, y, fit(name, 12, BW - text_w(num, 12) - 12), 12, C_TEXT))
+        add(T(PAD + BW, y, num, 12, C_MUTED, anchor="end"))
+        add('<rect x="%d" y="%d" width="%d" height="6" rx="3" fill="#eaeef2"/>' % (PAD, y + 6, BW))
+        add('<rect class="bar" style="animation-delay:%.2fs" x="%d" y="%d" width="%.1f" height="6" rx="3" fill="%s"/>'
+            % (1.2 + i * 0.12, PAD, y + 6, max(6, BW * n / top), C_BLUE))
+    if not s["repos"]:
+        add(T(PAD, 292, "Nenhum commit no último ano", 12, C_MUTED))
+    add('</g>')
+    add('<path d="M376 248V368" stroke="%s"/>' % C_LINE)
+
+    # ---- contribuições no último ano (direita): gráfico de área por semana
+    weeks = weekly(s["days"])
+    GX0, GX1, GY0, GY1 = 400, W - PAD, 280, 352
+    add('<g class="in d5">')
+    add(icon("calendar", GX0, 249))
+    add(T(GX0 + 24, 261, "Contribuições no último ano", 13, C_TEXT, 600))
+    peak = max([n for _, n in weeks] or [1]) or 1
+    add(T(GX1, 261, "pico: %s/semana" % fmt(peak), 11, C_MUTED, anchor="end"))
+    pts = []
+    for i, (_, n) in enumerate(weeks):
+        x = GX0 + (GX1 - GX0) * i / max(1, len(weeks) - 1)
+        y = GY1 - (GY1 - GY0) * n / peak
+        pts.append((x, y))
+    # curva suave (Catmull-Rom -> Bézier), sem passar abaixo do eixo
+    d = "M%.1f %.1f" % pts[0]
+    for i in range(len(pts) - 1):
+        p0, p1, p2 = pts[max(0, i - 1)], pts[i], pts[i + 1]
+        p3 = pts[min(len(pts) - 1, i + 2)]
+        c1 = (p1[0] + (p2[0] - p0[0]) / 6, min(GY1, p1[1] + (p2[1] - p0[1]) / 6))
+        c2 = (p2[0] - (p3[0] - p1[0]) / 6, min(GY1, p2[1] - (p3[1] - p1[1]) / 6))
+        d += " C%.1f %.1f %.1f %.1f %.1f %.1f" % (c1 + c2 + p2)
+    area = d + " L%.1f %d L%.1f %d Z" % (pts[-1][0], GY1, pts[0][0], GY1)
+    add('<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%s" stop-opacity=".28"/>'
+        '<stop offset="1" stop-color="%s" stop-opacity="0"/></linearGradient></defs>' % (C_GREEN, C_GREEN))
+    add('<path d="M%d %dH%d" stroke="%s"/>' % (GX0, GY1, GX1, C_LINE))
+    add('<path class="area" d="%s" fill="url(#ga)"/>' % area)
+    add('<path class="line" d="%s" pathLength="1" fill="none" stroke="%s" stroke-width="2" stroke-linejoin="round"/>'
+        % (d, C_GREEN))
+    lx, ly = pts[-1]
+    add('<circle class="pulse" cx="%.1f" cy="%.1f" r="4" fill="%s"/>' % (lx, ly, C_GREEN))
+    add('<circle cx="%.1f" cy="%.1f" r="3" fill="%s" stroke="#fff" stroke-width="1.5"/>' % (lx, ly, C_GREEN))
+    # rótulos de mês (só quando o mês muda e há espaço)
+    last_x = -99
+    for i, (d0, _) in enumerate(weeks):
+        if i == 0 or d0.month != weeks[i - 1][0].month:
+            x = GX0 + (GX1 - GX0) * i / max(1, len(weeks) - 1)
+            if x - last_x >= 26 and x <= GX1 - 12:
+                add(T(x, GY1 + 14, MESES[d0.month - 1], 10, C_MUTED, anchor="middle" if i else "start"))
+                last_x = x
+    add('</g>')
+
+    # ---- rodapé
+    add(T(PAD, 388, "Atualizado em %s · America/Sao_Paulo" % now.strftime("%d/%m/%Y"), 10, "#8c959f"))
+
+    css = """
+text{font-family:%s}
+.in{animation:in .6s cubic-bezier(.2,.7,.2,1) both}
+.d0{animation-delay:.05s}.d1{animation-delay:.2s}.d2{animation-delay:.35s}.d3{animation-delay:.5s}
+.d4{animation-delay:.65s}.d5{animation-delay:.8s}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ring{animation:ring 1.3s cubic-bezier(.3,.7,.2,1) .5s both}
+@keyframes ring{from{stroke-dashoffset:var(--c)}to{stroke-dashoffset:var(--o)}}
+.bar{transform-box:fill-box;transform-origin:left center;animation:bar .9s cubic-bezier(.3,.7,.2,1) both}
+@keyframes bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.line{stroke-dasharray:1;animation:draw 1.5s ease-in-out 1s both}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.area{animation:fade .8s ease 1.9s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.2s ease-out 2.5s infinite;opacity:0}
+@keyframes pulse{0%%{opacity:.5;transform:scale(1)}100%%{opacity:0;transform:scale(3)}}
+.flame{transform-box:fill-box;transform-origin:50%% 100%%;animation:flame 1.6s ease-in-out infinite}
+@keyframes flame{0%%,100%%{transform:scale(1) rotate(0)}30%%{transform:scale(1.06,.95) rotate(-3deg)}60%%{transform:scale(.96,1.05) rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){.in,.ring,.bar,.line,.area,.pulse,.flame{animation:none}}
+""" % FONT
+
+    return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" '
+            'aria-label="Estatísticas do GitHub de %s">\n<title>Estatísticas do GitHub de %s</title>\n'
+            '<style>%s</style>\n'
+            '<rect x=".5" y=".5" width="%d" height="%d" rx="8" fill="#fff" stroke="%s"/>\n%s\n</svg>\n'
+            % (W, H, W, H, NAME, NAME, css, W - 1, H - 1, C_BORDER, "\n".join(out)))
+
+
+def main():
+    mock = "--mock" in sys.argv
+    data = fetch_mock(big="--big" in sys.argv) if mock else fetch_real()
+    out = OUT
+    for a in sys.argv[1:]:
+        if a.startswith("--out="):
+            out = a.split("=", 1)[1]
+    with open(out, "w", encoding="utf-8") as f:
+        f.write(build(data))
+    print("ok:", out)
+
 
 if __name__ == "__main__":
-    d = get_stats()
-    svg = make_svg(d)
-    with open("github-stats.svg", "w", encoding="utf-8") as f:
-        f.write(svg)
-    print("Done! Card generated.")
+    main()
