@@ -63,11 +63,26 @@ def colorir(svg, estilo, comida="verde"):
     return svg.replace("</style>", css + "</style>", 1)
 
 
-if __name__ == "__main__":
+def main():
+    import os
+    import tempfile
     arq, estilo = sys.argv[1], sys.argv[2]
     comida = sys.argv[3] if len(sys.argv) > 3 else "verde"
-    with open(arq, encoding="utf-8") as f:
-        svg = f.read()
-    with open(arq, "w", encoding="utf-8") as f:
-        f.write(colorir(svg, estilo, comida))
-    print("ok: cobrinha", estilo, "comendo", comida)
+    try:
+        with open(arq, encoding="utf-8") as f:
+            svg = colorir(f.read(), estilo, comida)
+        # grava num arquivo novo e troca pelo original: funciona mesmo se o original for de outro dono
+        # (o Platane/snk roda em Docker como root)
+        pasta = os.path.dirname(os.path.abspath(arq))
+        fd, tmp = tempfile.mkstemp(dir=pasta, suffix=".svg")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(svg)
+        os.chmod(tmp, 0o644)
+        os.replace(tmp, arq)
+        print("ok: cobrinha", estilo, "comendo", comida)
+    except Exception as e:  # nunca derruba o workflow: no pior caso a cobrinha fica com a cor padrão
+        print("aviso: não consegui colorir a cobrinha (%s: %s); ela fica com a cor padrão" % (type(e).__name__, e))
+
+
+if __name__ == "__main__":
+    main()
