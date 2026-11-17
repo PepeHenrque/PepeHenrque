@@ -51,8 +51,8 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 <!-- projetos:inicio -->
 <p align="left">
 <a href="https://github.com/PepeHenrque/Desafio-Quant-ai"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-dark.svg?v=d1fae36e">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-light.svg?v=d1fae36e" alt="Desafio-Quant-ai" width="49%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-dark.svg?v=5d64940b">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-light.svg?v=5d64940b" alt="Desafio-Quant-ai" width="49%">
 </picture></a>
 </p>
 <!-- projetos:fim -->
