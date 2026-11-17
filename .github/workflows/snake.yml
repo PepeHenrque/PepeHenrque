@@ -44,12 +44,13 @@ jobs:
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
 
-      # comida em degradê que anda da esquerda para a direita; cobrinha numa cor que contrasta
+      # transforma a cobrinha na Lady Íris devorando doces + Finn, Jake e BMO assistindo no canto
       - name: Color the snake
         continue-on-error: true
         run: |
           sudo chown -R "$(id -u):$(id -g)" dist
-          python scripts/colorir_cobrinha.py dist/github-contribution-grid-snake.svg onda azul
+          python scripts/colorir_cobrinha.py dist/github-contribution-grid-snake.svg lady-iris doces
+          python scripts/colorir_cobrinha.py dist/github-contribution-grid-snake-dark.svg lady-iris doces
 
       - name: Deploy to Output Branch
         uses: peaceiris/actions-gh-pages@v3
@@ -68,7 +69,7 @@ jobs:
             exit 0
           fi
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@://github.com"
           git add README.md
           git commit -m "README: atualiza projetos fixados"
           git pull --rebase
