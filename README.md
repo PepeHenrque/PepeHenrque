@@ -24,7 +24,7 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 
 <p align="center">
   <img src="assets/pedro-avatar.webp" width="27%" alt="Avatar animado do Pedro" />
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-stats.svg" width="72%" alt="Estatísticas do GitHub do Pedro" />
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-stats.svg?v=2" width="72%" alt="Estatísticas do GitHub do Pedro" />
 </p>
 
 ## Contribuições
