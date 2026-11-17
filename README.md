@@ -54,5 +54,9 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-dark.svg?v=5d64940b">
   <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-light.svg?v=5d64940b" alt="Desafio-Quant-ai" width="49%">
 </picture></a>
+<a href="https://github.com/talescavalcanti/MEI-agente"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-talescavalcanti-mei-agente-dark.svg?v=89544080">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-talescavalcanti-mei-agente-light.svg?v=89544080" alt="MEI-agente" width="49%">
+</picture></a>
 </p>
 <!-- projetos:fim -->
