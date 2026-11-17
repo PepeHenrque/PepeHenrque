@@ -2,7 +2,7 @@ name: Generate Stats & Snake
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "*/10 * * * *"   # a cada 10 minutos (repositórios fixados aparecem em ~10-15 min)
   workflow_dispatch:
   push:
     branches:
@@ -43,6 +43,10 @@ jobs:
           outputs: |
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+
+      # cobrinha de uma cor e comida de outra (sempre opostas), trocando juntas a cada 4 segundos
+      - name: Color the snake
+        run: python scripts/colorir_cobrinha.py dist/github-contribution-grid-snake.svg alternado azul
 
       - name: Deploy to Output Branch
         uses: peaceiris/actions-gh-pages@v3
