@@ -44,12 +44,12 @@ jobs:
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
 
-      # cobrinha de uma cor e comida de outra (sempre opostas), trocando juntas a cada 4 segundos
+      # comida em degradê que anda da esquerda para a direita; cobrinha numa cor que contrasta
       - name: Color the snake
         continue-on-error: true
         run: |
           sudo chown -R "$(id -u):$(id -g)" dist
-          python scripts/colorir_cobrinha.py dist/github-contribution-grid-snake.svg alternado azul
+          python scripts/colorir_cobrinha.py dist/github-contribution-grid-snake.svg onda azul
 
       - name: Deploy to Output Branch
         uses: peaceiris/actions-gh-pages@v3
