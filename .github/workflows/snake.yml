@@ -45,6 +45,13 @@ jobs:
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
 
       # comida em degradê que anda da esquerda para a direita; cobrinha numa cor que contrasta
+      # peças caindo que montam o gráfico com as minhas contribuições (lê o gráfico gerado pela cobrinha)
+      - name: Falling blocks
+        continue-on-error: true
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" dist
+          python scripts/gerar_blocos.py dist/github-contribution-grid-snake.svg dist/blocos.svg
+
       - name: Color the snake
         continue-on-error: true
         run: |

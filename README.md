@@ -41,7 +41,7 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
   <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-light.svg?v=8" alt="λ Contribuições" width="100%">
 </picture>
 
-<img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-contribution-grid-snake.svg?v=8" alt="Cobrinha comendo o gráfico de contribuições">
+<img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/blocos.svg?v=1" alt="Peças caindo que montam o gráfico de contribuições do Pedro" width="100%">
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-projetos-dark.svg?v=8">
