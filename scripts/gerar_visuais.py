@@ -66,7 +66,6 @@ def titulo(texto, c):
            "@keyframes pisca{50%%{opacity:0}}"
            ".brilho{stroke-dasharray:80 %d;animation:corre 5s linear infinite}"
            "@keyframes corre{from{stroke-dashoffset:80}to{stroke-dashoffset:-%d}}"
-           "@media (prefers-reduced-motion:reduce){.cur,.brilho{animation:none}}"
            % (MONO, comp, comp))
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">'
             '<style>%s</style>'
@@ -139,8 +138,7 @@ def cartao(info, c):
     topicos = [t["topic"]["name"] for t in (info.get("repositoryTopics") or {}).get("nodes", [])]
     css = ("text{font-family:%s}"
            ".cresce{transform-box:fill-box;transform-origin:left center;animation:cresce .9s cubic-bezier(.3,.7,.2,1) .3s both}"
-           "@keyframes cresce{from{transform:scaleX(0)}to{transform:scaleX(1)}}"
-           "@media (prefers-reduced-motion:reduce){.cresce{animation:none}}" % MONO)
+           "@keyframes cresce{from{transform:scaleX(0)}to{transform:scaleX(1)}}" % MONO)
     s = ['<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">'
          % (CW, CH, CW, CH, escape(nome)), "<style>%s</style>" % css,
          '<rect x=".5" y=".5" width="%d" height="%d" rx="8" fill="%s" stroke="%s"/>' % (CW - 1, CH - 1, c["card"], c["borda"])]

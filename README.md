@@ -12,8 +12,8 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 🏆Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum AI.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-dark.svg">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-light.svg" alt="λ tecnologias" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-dark.svg?v=6">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-light.svg?v=6" alt="λ tecnologias" width="100%">
 </picture>
 
 <p>
@@ -24,18 +24,18 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-dark.svg">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-light.svg" alt="λ estatísticas" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-dark.svg?v=6">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-light.svg?v=6" alt="λ estatísticas" width="100%">
 </picture>
 
 <p align="center">
   <img src="assets/pedro-avatar.webp" width="29.4%" alt="Avatar animado do Pedro" />
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-stats.svg?v=5" width="68.6%" alt="Estatísticas do GitHub do Pedro" />
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-stats.svg?v=6" width="68.6%" alt="Estatísticas do GitHub do Pedro" />
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-dark.svg">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-light.svg" alt="λ contribuições" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-dark.svg?v=6">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-light.svg?v=6" alt="λ contribuições" width="100%">
 </picture>
 
-<img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-contribution-grid-snake.svg" alt="Cobrinha comendo o gráfico de contribuições">
+<img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-contribution-grid-snake.svg?v=6" alt="Cobrinha comendo o gráfico de contribuições">

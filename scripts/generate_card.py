@@ -389,7 +389,6 @@ text{font-family:%s}
 @keyframes pulse{0%%{opacity:.5;transform:scale(1)}100%%{opacity:0;transform:scale(3)}}
 .flame{transform-box:fill-box;transform-origin:50%% 100%%;animation:flame 1.6s ease-in-out infinite}
 @keyframes flame{0%%,100%%{transform:scale(1) rotate(0)}30%%{transform:scale(1.06,.95) rotate(-3deg)}60%%{transform:scale(.96,1.05) rotate(3deg)}}
-@media (prefers-reduced-motion:reduce){.in,.ring,.bar,.line,.area,.pulse,.flame{animation:none}}
 """ % FONT
 
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" '
