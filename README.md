@@ -23,13 +23,9 @@ Sou movido por curiosidade: gosto de aprender coisas novas e de compartilhar o q
 
 <!-- projetos:inicio -->
 <p align="center">
-<a href="https://github.com/PepeHenrque/AGRODEMANDA"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-agrodemanda-dark.svg">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-agrodemanda-light.svg" alt="AGRODEMANDA" width="49%">
-</picture></a>
-<a href="https://github.com/PepeHenrque/apts"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-apts-dark.svg">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-apts-light.svg" alt="apts" width="49%">
+<a href="https://github.com/PepeHenrque/Desafio-Quant-ai"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-dark.svg">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-light.svg" alt="Desafio-Quant-ai" width="49%">
 </picture></a>
 </p>
 <!-- projetos:fim -->
