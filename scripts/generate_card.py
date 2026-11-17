@@ -20,7 +20,7 @@ NAME = "Pedro Henrique"
 OUT = "github-stats.svg"
 TZ = timezone(timedelta(hours=-3))          # America/Sao_Paulo (sem horário de verão desde 2019)
 
-W, H = 800, 400
+W, H = 700, 420
 PAD = 24
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
 C_TEXT, C_MUTED, C_LINE, C_BORDER = "#1f2328", "#656d76", "#d8dee4", "#d0d7de"
@@ -233,13 +233,13 @@ def build(s):
 
     # ---- cabeçalho
     add('<g class="in d0">')
-    add(T(PAD, 46, NAME, 20, C_TEXT, 600))
-    add(T(PAD + text_w(NAME, 20, True) + 10, 46, "@" + USER, 14, C_MUTED))
+    add(T(PAD, 48, NAME, 22, C_TEXT, 600))
+    add(T(PAD + text_w(NAME, 22, True) + 10, 48, "@" + USER, 15, C_MUTED))
     add('</g>')
-    add('<path d="M%d 64H%d" stroke="%s"/>' % (PAD, W - PAD, C_LINE))
+    add('<path d="M%d 68H%d" stroke="%s"/>' % (PAD, W - PAD, C_LINE))
 
     # ---- métricas (coluna esquerda)
-    LX, VX, ROW, Y0 = PAD, 196, 24, 92
+    LX, VX, ROW, Y0 = PAD, 200, 26, 100
     rows = [("contrib", "Contribuições (ano)", fmt(s["total"])),
             ("commit", "Commits (ano)", fmt(s["commits"])),
             ("pr", "Pull Requests", fmt(s["prs"])),
@@ -249,26 +249,27 @@ def build(s):
     for i, (ic, label, val) in enumerate(rows):
         y = Y0 + i * ROW
         add(icon(ic, LX, y - 12))
-        add(T(LX + 26, y, label, 13, C_MUTED))
-        add(T(VX, y, val, 14, C_TEXT, 600))
+        add(T(LX + 26, y, label, 14, C_MUTED))
+        add(T(VX, y, val, 16, C_TEXT, 700))
     y = Y0 + 5 * ROW
     add(icon("code", LX, y - 12))
-    add(T(LX + 26, y, "Linguagem recente", 13, C_MUTED))
+    add(T(LX + 26, y, "Linguagem recente", 14, C_MUTED))
     if s["lang"]:
         name, color, repo = s["lang"]
         add('<circle cx="%g" cy="%g" r="5" fill="%s"/>' % (VX + 5, y - 4.5, color))
-        nm = fit(name, 14, 130, True)
-        add(T(VX + 16, y, nm, 14, C_TEXT, 600))
-        add(T(VX + 16 + text_w(nm, 14, True) + 8, y, fit(repo, 12, 360 - VX - 24 - text_w(nm, 14, True) - 8 + 32),
-              12, C_MUTED))
+        nm = fit(name, 15, 116, True)
+        add(T(VX + 16, y, nm, 15, C_TEXT, 700))
+        rx = VX + 16 + text_w(nm, 15, True) + 8
+        if 336 - rx > 24:
+            add(T(rx, y, fit(repo, 12, 336 - rx), 12, C_MUTED))
     else:
-        add(T(VX, y, "–", 14, C_MUTED))
+        add(T(VX, y, "–", 15, C_MUTED))
     add('</g>')
-    add('<path d="M400 80V212" stroke="%s"/>' % C_LINE)
+    add('<path d="M350 86V236" stroke="%s"/>' % C_LINE)
 
     # ---- coluna direita: nota | sequência atual | maior sequência (estilo streak-stats)
-    CY, RR = 136, 38
-    cols = (468, 588, 712)
+    CY, RR = 140, 34
+    cols = (406, 518, 630)
     circ = 2 * math.pi * RR
 
     # nota
@@ -279,9 +280,9 @@ def build(s):
     add('<circle class="ring" cx="%g" cy="%g" r="%g" fill="none" stroke="%s" stroke-width="7" stroke-linecap="round"'
         ' stroke-dasharray="%.2f" style="--c:%.2f;--o:%.2f" stroke-dashoffset="%.2f" transform="rotate(-90 %g %g)"/>'
         % (RX, CY, RR, C_BLUE, circ, circ, circ * (1 - fill), circ * (1 - fill), RX, CY))
-    add(T(RX, CY + 9, lvl, 26, C_TEXT, 700, "middle"))
-    add(T(RX, CY + RR + 24, "Nota", 13, C_BLUE, 600, "middle"))
-    add(T(RX, CY + RR + 42, "top %.0f%%" % max(1, pct), 11, C_MUTED, anchor="middle"))
+    add(T(RX, CY + 9, lvl, 25, C_TEXT, 700, "middle"))
+    add(T(RX, CY + RR + 26, "Nota", 12, C_BLUE, 700, "middle"))
+    add(T(RX, CY + RR + 44, "top %.0f%%" % max(1, pct), 11.5, C_MUTED, anchor="middle"))
     add('</g>')
 
     # sequência atual: anel laranja com a chama no topo
@@ -290,50 +291,50 @@ def build(s):
     add('<circle cx="%g" cy="%g" r="%g" fill="none" stroke="%s" stroke-width="5"/>' % (SX, CY, RR, C_ORANGE))
     add('<circle cx="%g" cy="%g" r="13" fill="#fff"/>' % (SX, CY - RR))          # abre espaço no anel
     add('<g transform="translate(%g %g) scale(1.5)"><g class="flame">%s</g></g>' % (SX - 12, CY - RR - 14, FLAME))
-    add(T(SX, CY + 10, fmt(cur), 30, C_TEXT, 700, "middle"))
-    add(T(SX, CY + RR + 24, "Sequência atual", 13, C_ORANGE, 600, "middle"))
-    add(T(SX, CY + RR + 42, ("%s – %s" % (dt(cs), dt(ce))) if cur else "comece hoje", 11, C_MUTED, anchor="middle"))
+    add(T(SX, CY + 10, fmt(cur), 28, C_TEXT, 700, "middle"))
+    add(T(SX, CY + RR + 26, "Sequência atual", 12, C_ORANGE, 700, "middle"))
+    add(T(SX, CY + RR + 44, ("%s – %s" % (dt(cs), dt(ce))) if cur else "comece hoje", 11.5, C_MUTED, anchor="middle"))
     add('</g>')
 
     # maior sequência
     BX = cols[2]
     add('<g class="in d3">')
-    add(T(BX, CY + 10, fmt(best), 30, C_TEXT, 700, "middle"))
-    add(T(BX, CY + RR + 24, "Maior sequência", 13, C_TEXT, 400, "middle"))
-    add(T(BX, CY + RR + 42, ("%s – %s" % (dt(bs), dt(be))) if best else "–", 11, C_MUTED, anchor="middle"))
+    add(T(BX, CY + 10, fmt(best), 28, C_TEXT, 700, "middle"))
+    add(T(BX, CY + RR + 26, "Maior sequência", 12, C_TEXT, 600, "middle"))
+    add(T(BX, CY + RR + 44, ("%s – %s" % (dt(bs), dt(be))) if best else "–", 11.5, C_MUTED, anchor="middle"))
     add('</g>')
     for x in ((cols[0] + cols[1]) / 2, (cols[1] + cols[2]) / 2):
-        add('<path d="M%g 92V212" stroke="%s"/>' % (x, C_LINE))
+        add('<path d="M%g 96V226" stroke="%s"/>' % (x, C_LINE))
 
-    add('<path d="M%d 232H%d" stroke="%s"/>' % (PAD, W - PAD, C_LINE))
+    add('<path d="M%d 250H%d" stroke="%s"/>' % (PAD, W - PAD, C_LINE))
 
     # ---- onde estou contribuindo (esquerda)
     add('<g class="in d4">')
-    add(icon("repo", PAD, 249))
-    add(T(PAD + 24, 261, "Onde estou contribuindo", 13, C_TEXT, 600))
+    add(icon("repo", PAD, 268))
+    add(T(PAD + 24, 281, "Onde estou contribuindo", 14, C_TEXT, 700))
     top = max([n for _, n in s["repos"]] or [1])
-    BW = 336 - PAD
+    BW = 300 - PAD
     for i, (name, n) in enumerate(s["repos"]):
-        y = 290 + i * 30
+        y = 312 + i * 32
         num = fmt(n) + " commits"
-        add(T(PAD, y, fit(name, 12, BW - text_w(num, 12) - 12), 12, C_TEXT))
+        add(T(PAD, y, fit(name, 13, BW - text_w(num, 12) - 12), 13, C_TEXT, 600))
         add(T(PAD + BW, y, num, 12, C_MUTED, anchor="end"))
         add('<rect x="%d" y="%d" width="%d" height="6" rx="3" fill="#eaeef2"/>' % (PAD, y + 6, BW))
         add('<rect class="bar" style="animation-delay:%.2fs" x="%d" y="%d" width="%.1f" height="6" rx="3" fill="%s"/>'
             % (1.2 + i * 0.12, PAD, y + 6, max(6, BW * n / top), C_BLUE))
     if not s["repos"]:
-        add(T(PAD, 292, "Nenhum commit no último ano", 12, C_MUTED))
+        add(T(PAD, 312, "Nenhum commit no último ano", 13, C_MUTED))
     add('</g>')
-    add('<path d="M376 248V368" stroke="%s"/>' % C_LINE)
+    add('<path d="M324 266V392" stroke="%s"/>' % C_LINE)
 
     # ---- contribuições no último ano (direita): gráfico de área por semana
     weeks = weekly(s["days"])
-    GX0, GX1, GY0, GY1 = 400, W - PAD, 280, 352
+    GX0, GX1, GY0, GY1 = 348, W - PAD, 302, 374
     add('<g class="in d5">')
-    add(icon("calendar", GX0, 249))
-    add(T(GX0 + 24, 261, "Contribuições no último ano", 13, C_TEXT, 600))
+    add(icon("calendar", GX0, 268))
+    add(T(GX0 + 24, 281, "Contribuições no ano", 14, C_TEXT, 700))
     peak = max([n for _, n in weeks] or [1]) or 1
-    add(T(GX1, 261, "pico: %s/semana" % fmt(peak), 11, C_MUTED, anchor="end"))
+    add(T(GX1, 281, "pico %s/sem." % fmt(peak), 11.5, C_MUTED, anchor="end"))
     pts = []
     for i, (_, n) in enumerate(weeks):
         x = GX0 + (GX1 - GX0) * i / max(1, len(weeks) - 1)
@@ -362,13 +363,13 @@ def build(s):
     for i, (d0, _) in enumerate(weeks):
         if i == 0 or d0.month != weeks[i - 1][0].month:
             x = GX0 + (GX1 - GX0) * i / max(1, len(weeks) - 1)
-            if x - last_x >= 26 and x <= GX1 - 12:
-                add(T(x, GY1 + 14, MESES[d0.month - 1], 10, C_MUTED, anchor="middle" if i else "start"))
+            if x - last_x >= 24 and x <= GX1 - 12:
+                add(T(x, GY1 + 15, MESES[d0.month - 1], 10.5, C_MUTED, anchor="middle" if i else "start"))
                 last_x = x
     add('</g>')
 
     # ---- rodapé
-    add(T(PAD, 388, "Atualizado em %s · America/Sao_Paulo" % now.strftime("%d/%m/%Y"), 10, "#8c959f"))
+    add(T(PAD, 406, "Atualizado em %s · America/Sao_Paulo" % now.strftime("%d/%m/%Y"), 10.5, "#8c959f"))
 
     css = """
 text{font-family:%s}

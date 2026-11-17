@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+# evita duas execuções ao mesmo tempo tentando salvar o README
+concurrency:
+  group: perfil
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,6 +34,7 @@ jobs:
           python scripts/generate_card.py
           mkdir -p dist
           cp github-stats.svg dist/
+          python scripts/gerar_visuais.py --out=dist
 
       - name: Generate Snake Animation
         uses: Platane/snk@v3
@@ -45,3 +51,18 @@ jobs:
           publish_branch: output
           publish_dir: ./dist
           force_orphan: true
+
+      # Os projetos do README vêm dos repositórios fixados no perfil.
+      # Se mudaram, salva o README novo (commits feitos pelo GITHUB_TOKEN não disparam o workflow de novo).
+      - name: Update README projects
+        run: |
+          if git diff --quiet README.md; then
+            echo "README sem mudança."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "README: atualiza projetos fixados"
+          git pull --rebase
+          git push
