@@ -1,4 +1,7 @@
-# Pedro Henrique
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/nome-dark.svg?v=8">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/nome-light.svg?v=8" alt="Pedro Henrique" width="100%">
+</picture>
 
 Me chamo Pedro Henrique Gomes de Lima, atualmente no quarto período de Ciência da Computação.
 
@@ -12,8 +15,8 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 🏆Destaque: equipe classificada entre as 15 melhores do país no desafio Quantum AI.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-dark.svg?v=6">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-light.svg?v=6" alt="λ tecnologias" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-dark.svg?v=8">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-tecnologias-light.svg?v=8" alt="λ Tecnologias" width="100%">
 </picture>
 
 <p>
@@ -24,18 +27,32 @@ Estou estudando C, Java, Python e a linguagem do Arduino. Também venho me aprof
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-dark.svg?v=6">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-light.svg?v=6" alt="λ estatísticas" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-dark.svg?v=8">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-estatisticas-light.svg?v=8" alt="λ Estatísticas" width="100%">
 </picture>
 
 <p align="center">
   <img src="assets/pedro-avatar.webp" width="29.4%" alt="Avatar animado do Pedro" />
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-stats.svg?v=6" width="68.6%" alt="Estatísticas do GitHub do Pedro" />
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-stats.svg?v=8" width="68.6%" alt="Estatísticas do GitHub do Pedro" />
 </p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-dark.svg?v=6">
-  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-light.svg?v=6" alt="λ contribuições" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-dark.svg?v=8">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-contribuicoes-light.svg?v=8" alt="λ Contribuições" width="100%">
 </picture>
 
-<img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-contribution-grid-snake.svg?v=6" alt="Cobrinha comendo o gráfico de contribuições">
+<img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/github-contribution-grid-snake.svg?v=8" alt="Cobrinha comendo o gráfico de contribuições">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-projetos-dark.svg?v=8">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/secao-projetos-light.svg?v=8" alt="λ Projetos" width="100%">
+</picture>
+
+<!-- projetos:inicio -->
+<p align="left">
+<a href="https://github.com/PepeHenrque/Desafio-Quant-ai"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-dark.svg?v=d1fae36e">
+  <img src="https://raw.githubusercontent.com/PepeHenrque/PepeHenrque/output/projeto-pepehenrque-desafio-quant-ai-light.svg?v=d1fae36e" alt="Desafio-Quant-ai" width="49%">
+</picture></a>
+</p>
+<!-- projetos:fim -->

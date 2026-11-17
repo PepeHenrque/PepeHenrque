@@ -21,6 +21,7 @@ from xml.sax.saxutils import escape
 RAIZ = Path(__file__).resolve().parent.parent
 MONO = "ui-monospace,SFMono-Regular,'Cascadia Code',Menlo,Consolas,'Liberation Mono',monospace"
 W = 800
+SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif"
 
 TEMAS = {
     "dark": dict(card="#161b22", borda="#30363d", texto="#e6edf3", fraco="#8b949e", linha="#30363d",
@@ -31,15 +32,31 @@ TEMAS = {
 
 # arquivo -> título que aparece depois do λ
 SECOES = {
-    "tecnologias": "tecnologias",
-    "estatisticas": "estatísticas",
-    "contribuicoes": "contribuições",
-    "projetos": "projetos",
+    "tecnologias": "Tecnologias",
+    "estatisticas": "Estatísticas",
+    "contribuicoes": "Contribuições",
+    "projetos": "Projetos",
 }
+NOME = "Pedro Henrique"
 
 
 def mono_w(s, tam):
     return len(s) * tam * 0.6          # fonte monoespaçada: ~0.6 da altura por caractere
+
+
+# larguras (em "em") de Arial/Helvetica em negrito; dão uma boa estimativa para a fonte do GitHub
+LARG = dict(zip("abcdefghijklmnopqrstuvwxyz",
+                [.556, .611, .556, .611, .556, .333, .611, .611, .278, .278, .556, .278, .889, .611, .611, .611,
+                 .611, .389, .556, .333, .611, .556, .778, .556, .556, .5]))
+LARG.update(zip("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                [.722, .722, .722, .722, .667, .611, .778, .722, .278, .556, .722, .611, .833, .722, .778, .667,
+                 .778, .722, .667, .611, .722, .667, .944, .667, .667, .611]))
+LARG.update({c: LARG[b] for c, b in zip("áàâãéêíóôõúçÁÉÍÓÚÇ", "aaaaeeiooouc" + "AEIOUC")})
+LARG.update({" ": .278, "-": .333, ".": .278})
+
+
+def sans_w(s, tam):
+    return tam * sum(LARG.get(ch, .6) for ch in s)
 
 
 def caber(s, tam, max_w):
@@ -55,34 +72,40 @@ def T(x, y, s, tam, cor, peso=400, ancora="start"):
 
 
 # --------------------------------------------------------------------------- títulos de seção
-def titulo(texto, c):
-    H = 44
-    tx = 30
-    fim = tx + mono_w(texto, 20) + 6
+def titulo(texto, c, tam=21, lambda_=True, H=44):
+    tx = 30 if lambda_ else 2
+    base = round(H * 0.68)
+    fim = tx + sans_w(texto, tam) + round(tam * 0.45)
     x0 = fim + 24
     comp = W - 2 - x0
-    css = ("text{font-family:%s}"
+    ch = round(tam * 0.95)
+    css = (".t{font-family:%s}.l{font-family:%s}"
            ".cur{animation:pisca 1.1s steps(1) infinite}"
            "@keyframes pisca{50%%{opacity:0}}"
            ".brilho{stroke-dasharray:80 %d;animation:corre 5s linear infinite}"
            "@keyframes corre{from{stroke-dashoffset:80}to{stroke-dashoffset:-%d}}"
-           % (MONO, comp, comp))
+           % (SANS, MONO, comp, comp))
+    lam = ('<text class="l" x="2" y="%d" font-size="22" fill="%s" font-weight="700">λ</text>' % (base, c["laranja"])
+           if lambda_ else "")
+    meio = base - tam * 0.35
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">'
-            '<style>%s</style>'
-            '%s%s'
-            '<rect class="cur" x="%g" y="13" width="10" height="20" rx="1" fill="%s"/>'
-            '<line x1="%g" y1="23" x2="%d" y2="23" stroke="%s" stroke-width="1.5"/>'
-            '<line class="brilho" x1="%g" y1="23" x2="%d" y2="23" stroke="%s" stroke-width="2" stroke-linecap="round"/>'
+            '<style>%s</style>%s'
+            '<text class="t" x="%g" y="%d" font-size="%g" fill="%s" font-weight="600">%s</text>'
+            '<rect class="cur" x="%g" y="%g" width="%g" height="%d" rx="1" fill="%s"/>'
+            '<line x1="%g" y1="%g" x2="%d" y2="%g" stroke="%s" stroke-width="1.5"/>'
+            '<line class="brilho" x1="%g" y1="%g" x2="%d" y2="%g" stroke="%s" stroke-width="2" stroke-linecap="round"/>'
             '</svg>'
-            % (W, H, W, H, escape(texto), css,
-               T(2, 30, "λ", 22, c["laranja"], 700), T(tx, 30, texto, 20, c["texto"], 700),
-               fim, c["laranja"], x0, W - 2, c["linha"], x0, W - 2, c["texto"]))
+            % (W, H, W, H, escape(texto), css, lam, tx, base, tam, c["texto"], escape(texto),
+               fim, base - ch * 0.85, max(10, tam * 0.48), ch, c["laranja"],
+               x0, meio, W - 2, meio, c["linha"], x0, meio, W - 2, meio, c["laranja"]))
 
 
 # --------------------------------------------------------------------------- cartões de projeto
 USUARIO = "PepeHenrque"
 CAMPOS = ("nameWithOwner name description url primaryLanguage { name color } "
-          "repositoryTopics(first: 4) { nodes { topic { name } } }")
+          "repositoryTopics(first: 4) { nodes { topic { name } } } "
+          'r1: object(expression: "HEAD:README.md") { ... on Blob { text } } '
+          'r2: object(expression: "HEAD:readme.md") { ... on Blob { text } }')
 QUERY = """
 query($login: String!) {
   user(login: $login) {
@@ -109,10 +132,38 @@ def buscar_projetos():
         print("aviso: não consegui buscar os repositórios (%s); projetos e README ficam como estão" % e)
         return None
     fixados = [n for n in u["pinnedItems"]["nodes"] if n]
-    if fixados:
-        return fixados
-    perfil = "%s/%s" % (USUARIO, USUARIO)
-    return [n for n in u["repositories"]["nodes"] if n and n["nameWithOwner"] != perfil][:4]
+    if not fixados:
+        perfil = "%s/%s" % (USUARIO, USUARIO)
+        fixados = [n for n in u["repositories"]["nodes"] if n and n["nameWithOwner"] != perfil][:4]
+    for n in fixados:
+        if not n.get("description"):
+            texto = (n.get("r1") or n.get("r2") or {}).get("text") or ""
+            n["description"] = descricao_do_readme(texto, n["name"])
+        n.pop("r1", None)
+        n.pop("r2", None)
+    return fixados
+
+
+def descricao_do_readme(texto, nome):
+    """primeira frase de texto corrido do README (pula títulos, imagens, badges, HTML, código)."""
+    import re
+    dentro_codigo = False
+    for linha in texto.splitlines():
+        l = linha.strip()
+        if l.startswith("```"):
+            dentro_codigo = not dentro_codigo
+            continue
+        if dentro_codigo or not l or l[0] in "#<>|![-*=_" or l[0].isdigit() and l[1:2] in ".)":
+            continue
+        l = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", l)          # imagens
+        l = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", l)      # links -> texto
+        l = re.sub(r"<[^>]+>", "", l)                          # HTML
+        l = re.sub(r"[*_`]", "", l).strip()
+        if len(l) < 15 or l.lower() == nome.lower():
+            continue
+        frase = re.split(r"(?<=[.!?])\s", l)[0]
+        return frase
+    return ""
 
 
 def quebrar(texto, tam, max_w, max_linhas=2):
@@ -132,13 +183,18 @@ def quebrar(texto, tam, max_w, max_linhas=2):
 
 def cartao(info, c):
     CW, CH = 400, 132
+    import math
+    RR = 8
+    PERIM = 2 * ((CW - 2) + (CH - 2)) - 8 * RR + 2 * math.pi * RR   # contorno do retângulo arredondado
+    SEG = 70
     nome = info["name"]
     desc = info.get("description") or "sem descrição ainda"
     lang = info.get("primaryLanguage") or {}
     topicos = [t["topic"]["name"] for t in (info.get("repositoryTopics") or {}).get("nodes", [])]
     css = ("text{font-family:%s}"
-           ".cresce{transform-box:fill-box;transform-origin:left center;animation:cresce .9s cubic-bezier(.3,.7,.2,1) .3s both}"
-           "@keyframes cresce{from{transform:scaleX(0)}to{transform:scaleX(1)}}" % MONO)
+           ".volta{stroke-dasharray:%.1f %.1f;animation:volta 7s linear infinite}"
+           "@keyframes volta{from{stroke-dashoffset:0}to{stroke-dashoffset:-%.1f}}"
+           % (MONO, SEG, PERIM - SEG, PERIM))
     s = ['<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d" role="img" aria-label="%s">'
          % (CW, CH, CW, CH, escape(nome)), "<style>%s</style>" % css,
          '<rect x=".5" y=".5" width="%d" height="%d" rx="8" fill="%s" stroke="%s"/>' % (CW - 1, CH - 1, c["card"], c["borda"])]
@@ -154,12 +210,24 @@ def cartao(info, c):
         s.append(T(18, 62 + i * 20, l, 13, c["texto"]))
     if topicos:
         s.append(T(18, CH - 22, caber("# " + " · ".join(topicos), 12, CW - 36), 12, c["fraco"]))
-    s.append('<rect class="cresce" x="1" y="%d" width="64" height="2.5" rx="1.2" fill="%s"/>' % (CH - 3, c["laranja"]))
+    s.append('<rect class="volta" x="1" y="1" width="%d" height="%d" rx="8" fill="none" stroke="%s" stroke-width="2"'
+             ' stroke-linecap="round"/>' % (CW - 2, CH - 2, c["laranja"]))
     s.append("</svg>")
     return "".join(s)
 
 
 BASE = "https://raw.githubusercontent.com/%s/%s/output/" % (USUARIO, USUARIO)
+
+
+ESTILO = "8"   # mude se alterar o desenho dos cartões, para o GitHub não mostrar a versão antiga
+
+
+def versao(info):
+    """muda sempre que o conteúdo do cartão muda (descrição, linguagem, tópicos), furando o cache do GitHub."""
+    import hashlib
+    chave = json.dumps([ESTILO, info.get("description"), info.get("primaryLanguage"),
+                        info.get("repositoryTopics")], sort_keys=True)
+    return hashlib.sha1(chave.encode()).hexdigest()[:8]
 
 
 def slug(info):
@@ -170,9 +238,10 @@ def bloco_readme(projetos):
     linhas = ['<p align="left">']
     for info in projetos:
         linhas.append('<a href="%s"><picture>\n'
-                      '  <source media="(prefers-color-scheme: dark)" srcset="%sprojeto-%s-dark.svg">\n'
-                      '  <img src="%sprojeto-%s-light.svg" alt="%s" width="49%%">\n</picture></a>'
-                      % (info["url"], BASE, slug(info), BASE, slug(info), escape(info["name"])))
+                      '  <source media="(prefers-color-scheme: dark)" srcset="%sprojeto-%s-dark.svg?v=%s">\n'
+                      '  <img src="%sprojeto-%s-light.svg?v=%s" alt="%s" width="49%%">\n</picture></a>'
+                      % (info["url"], BASE, slug(info), versao(info), BASE, slug(info), versao(info),
+                         escape(info["name"])))
     linhas.append("</p>")
     return "\n".join(linhas)
 
@@ -205,6 +274,8 @@ def main():
         for arq, txt in SECOES.items():
             (out / ("secao-%s-%s.svg" % (arq, tema))).write_text(titulo(txt, c), encoding="utf-8")
             n += 1
+        (out / ("nome-%s.svg" % tema)).write_text(titulo(NOME, c, tam=30, lambda_=False, H=54), encoding="utf-8")
+        n += 1
     projetos = buscar_projetos()
     if projetos:
         for tema, c in TEMAS.items():
