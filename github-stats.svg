@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="420" viewBox="0 0 700 420" role="img" aria-label="Estatísticas do GitHub de Pedro Henrique">
+<title>Estatísticas do GitHub de Pedro Henrique</title>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+.in{animation:in .6s cubic-bezier(.2,.7,.2,1) both}
+.d0{animation-delay:.05s}.d1{animation-delay:.2s}.d2{animation-delay:.35s}.d3{animation-delay:.5s}
+.d4{animation-delay:.65s}.d5{animation-delay:.8s}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ring{animation:ring 1.3s cubic-bezier(.3,.7,.2,1) .5s both}
+@keyframes ring{from{stroke-dashoffset:var(--c)}to{stroke-dashoffset:var(--o)}}
+.bar{transform-box:fill-box;transform-origin:left center;animation:bar .9s cubic-bezier(.3,.7,.2,1) both}
+@keyframes bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.line{stroke-dasharray:1;animation:draw 1.5s ease-in-out 1s both}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.area{animation:fade .8s ease 1.9s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.2s ease-out 2.5s infinite;opacity:0}
+@keyframes pulse{0%{opacity:.5;transform:scale(1)}100%{opacity:0;transform:scale(3)}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flame 1.6s ease-in-out infinite}
+@keyframes flame{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.06,.95) rotate(-3deg)}60%{transform:scale(.96,1.05) rotate(3deg)}}
+</style>
+<rect x=".5" y=".5" width="699" height="419" rx="8" fill="#fff" stroke="#d0d7de"/>
+<g class="in d0">
+<text x="24" y="48" font-size="22" fill="#1f2328" font-weight="600" text-anchor="start">Pedro Henrique</text>
+<text x="205.6" y="48" font-size="15" fill="#656d76" font-weight="400" text-anchor="start">@PepeHenrque</text>
+</g>
+<path d="M24 68H676" stroke="#d8dee4"/>
+<g class="in d1">
+<g transform="translate(24 88)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1" fill="#656d76"/></g>
+<text x="50" y="100" font-size="14" fill="#656d76" font-weight="400" text-anchor="start">Contribuições (ano)</text>
+<text x="200" y="100" font-size="16" fill="#1f2328" font-weight="700" text-anchor="start">308</text>
+<g transform="translate(24 114)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><path d="M1 8h4M11 8h4"/></g>
+<text x="50" y="126" font-size="14" fill="#656d76" font-weight="400" text-anchor="start">Commits (ano)</text>
+<text x="200" y="126" font-size="16" fill="#1f2328" font-weight="700" text-anchor="start">194</text>
+<g transform="translate(24 140)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="3.5" r="1.8"/><circle cx="4" cy="12.5" r="1.8"/><circle cx="12" cy="12.5" r="1.8"/><path d="M4 5.3v5.4M12 10.7V6.5a2 2 0 0 0-2-2H7.5M9 3 7.5 4.5 9 6"/></g>
+<text x="50" y="152" font-size="14" fill="#656d76" font-weight="400" text-anchor="start">Pull Requests</text>
+<text x="200" y="152" font-size="16" fill="#1f2328" font-weight="700" text-anchor="start">29</text>
+<g transform="translate(24 166)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.2"/><circle cx="8" cy="8" r="1" fill="#656d76"/></g>
+<text x="50" y="178" font-size="14" fill="#656d76" font-weight="400" text-anchor="start">Issues</text>
+<text x="200" y="178" font-size="16" fill="#1f2328" font-weight="700" text-anchor="start">0</text>
+<g transform="translate(24 192)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.8l1.9 3.9 4.2.6-3 3 .7 4.2L8 11.5l-3.8 2 .7-4.2-3-3 4.2-.6z"/></g>
+<text x="50" y="204" font-size="14" fill="#656d76" font-weight="400" text-anchor="start">Stars recebidas</text>
+<text x="200" y="204" font-size="16" fill="#1f2328" font-weight="700" text-anchor="start">24</text>
+<g transform="translate(24 218)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 4 1.5 8l4 4M10.5 4l4 4-4 4"/></g>
+<text x="50" y="230" font-size="14" fill="#656d76" font-weight="400" text-anchor="start">Linguagem recente</text>
+<circle cx="205" cy="225.5" r="5" fill="#3572A5"/>
+<text x="216" y="230" font-size="15" fill="#1f2328" font-weight="700" text-anchor="start">Python</text>
+<text x="273.5" y="230" font-size="12" fill="#656d76" font-weight="400" text-anchor="start">helpdesk…</text>
+</g>
+<path d="M350 86V236" stroke="#d8dee4"/>
+<g class="in d2">
+<circle cx="406" cy="140" r="34" fill="none" stroke="#eaeef2" stroke-width="7"/>
+<circle class="ring" cx="406" cy="140" r="34" fill="none" stroke="#0969da" stroke-width="7" stroke-linecap="round" stroke-dasharray="213.63" style="--c:213.63;--o:147.09" stroke-dashoffset="147.09" transform="rotate(-90 406 140)"/>
+<text x="406" y="149" font-size="25" fill="#1f2328" font-weight="700" text-anchor="middle">B-</text>
+<text x="406" y="200" font-size="12" fill="#0969da" font-weight="700" text-anchor="middle">Nota</text>
+<text x="406" y="218" font-size="11.5" fill="#656d76" font-weight="400" text-anchor="middle">top 69%</text>
+</g>
+<g class="in d3">
+<circle cx="518" cy="140" r="34" fill="none" stroke="#e16f24" stroke-width="5"/>
+<circle cx="518" cy="106" r="13" fill="#fff"/>
+<g transform="translate(506 92) scale(1.5)"><g class="flame"><path d="M8 1.2c.6 2.3 3.8 3.9 3.8 7.6A3.8 3.8 0 0 1 4.2 9c0-1.6.8-2.6 1.6-3.4.1 1.1.6 1.9 1.4 2.1-.4-2.4.1-4.6.8-6.5z" fill="#e16f24"/><path d="M8 8.2c.3 1 1.6 1.6 1.6 3a1.6 1.6 0 0 1-3.2.1c0-.8.5-1.3 1-1.7.1.4.3.6.6.7-.1-.8 0-1.5 0-2.1z" fill="#fff3"/></g></g>
+<text x="518" y="150" font-size="28" fill="#1f2328" font-weight="700" text-anchor="middle">0</text>
+<text x="518" y="200" font-size="12" fill="#e16f24" font-weight="700" text-anchor="middle">Sequência atual</text>
+<text x="518" y="218" font-size="11.5" fill="#656d76" font-weight="400" text-anchor="middle">comece hoje</text>
+</g>
+<g class="in d3">
+<text x="630" y="150" font-size="28" fill="#1f2328" font-weight="700" text-anchor="middle">8</text>
+<text x="630" y="200" font-size="12" fill="#1f2328" font-weight="600" text-anchor="middle">Maior sequência</text>
+<text x="630" y="218" font-size="11.5" fill="#656d76" font-weight="400" text-anchor="middle">11 nov – 18 nov</text>
+</g>
+<path d="M462 96V226" stroke="#d8dee4"/>
+<path d="M574 96V226" stroke="#d8dee4"/>
+<path d="M24 250H676" stroke="#d8dee4"/>
+<g class="in d4">
+<g transform="translate(24 268)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.5V3a1.5 1.5 0 0 1 1.5-1.5H13v10H4.5A1.5 1.5 0 0 0 3 13a1.5 1.5 0 0 0 1.5 1.5H13"/></g>
+<text x="48" y="281" font-size="14" fill="#1f2328" font-weight="700" text-anchor="start">Onde estou contribuindo</text>
+<text x="24" y="312" font-size="13" fill="#1f2328" font-weight="600" text-anchor="start">MEI-agente</text>
+<text x="300" y="312" font-size="12" fill="#656d76" font-weight="400" text-anchor="end">26 commits</text>
+<rect x="24" y="318" width="276" height="6" rx="3" fill="#eaeef2"/>
+<rect class="bar" style="animation-delay:1.20s" x="24" y="318" width="276.0" height="6" rx="3" fill="#0969da"/>
+<text x="24" y="344" font-size="13" fill="#1f2328" font-weight="600" text-anchor="start">vagrant-jenkins</text>
+<text x="300" y="344" font-size="12" fill="#656d76" font-weight="400" text-anchor="end">19 commits</text>
+<rect x="24" y="350" width="276" height="6" rx="3" fill="#eaeef2"/>
+<rect class="bar" style="animation-delay:1.32s" x="24" y="350" width="201.7" height="6" rx="3" fill="#0969da"/>
+<text x="24" y="376" font-size="13" fill="#1f2328" font-weight="600" text-anchor="start">Projeto-IoT</text>
+<text x="300" y="376" font-size="12" fill="#656d76" font-weight="400" text-anchor="end">17 commits</text>
+<rect x="24" y="382" width="276" height="6" rx="3" fill="#eaeef2"/>
+<rect class="bar" style="animation-delay:1.44s" x="24" y="382" width="180.5" height="6" rx="3" fill="#0969da"/>
+</g>
+<path d="M324 266V392" stroke="#d8dee4"/>
+<g class="in d5">
+<g transform="translate(348 268)" fill="none" stroke="#656d76" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5 1.5v3M11 1.5v3"/></g>
+<text x="372" y="281" font-size="14" fill="#1f2328" font-weight="700" text-anchor="start">Contribuições no ano</text>
+<text x="676" y="281" font-size="11.5" fill="#656d76" font-weight="400" text-anchor="end">pico 83/sem.</text>
+<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a7f37" stop-opacity=".28"/><stop offset="1" stop-color="#1a7f37" stop-opacity="0"/></linearGradient></defs>
+<path d="M348 374H676" stroke="#d8dee4"/>
+<path class="area" d="M348.0 374.0 C349.1 374.0 352.3 374.0 354.4 374.0 C356.6 374.0 358.7 374.0 360.9 374.0 C363.0 374.0 365.2 374.0 367.3 374.0 C369.4 374.0 371.6 374.0 373.7 374.0 C375.9 374.0 378.0 374.0 380.2 374.0 C382.3 374.0 384.4 374.0 386.6 374.0 C388.7 374.0 390.9 374.0 393.0 374.0 C395.2 374.0 397.3 374.0 399.5 374.0 C401.6 374.0 403.7 374.0 405.9 374.0 C408.0 374.0 410.2 374.0 412.3 374.0 C414.5 374.0 416.6 374.0 418.7 374.0 C420.9 374.0 423.0 374.0 425.2 374.0 C427.3 374.0 429.5 374.0 431.6 374.0 C433.8 374.0 435.9 374.0 438.0 374.0 C440.2 374.0 442.3 374.0 444.5 374.0 C446.6 374.0 448.8 374.0 450.9 374.0 C453.0 374.0 455.2 374.0 457.3 374.0 C459.5 374.0 461.6 374.0 463.8 374.0 C465.9 374.0 468.1 374.0 470.2 374.0 C472.3 374.0 474.5 374.0 476.6 374.0 C478.8 374.0 480.9 374.0 483.1 374.0 C485.2 374.0 487.3 374.0 489.5 374.0 C491.6 374.0 493.8 374.0 495.9 374.0 C498.1 374.0 500.2 374.0 502.4 374.0 C504.5 373.4 506.6 370.5 508.8 370.5 C510.9 370.5 513.1 373.6 515.2 374.0 C517.4 374.0 519.5 373.6 521.6 373.1 C523.8 372.7 525.9 371.4 528.1 371.4 C530.2 371.4 532.4 372.7 534.5 373.1 C536.7 373.6 538.8 373.9 540.9 374.0 C543.1 374.0 545.2 374.0 547.4 374.0 C549.5 374.0 551.7 374.0 553.8 374.0 C555.9 374.0 558.1 374.0 560.2 374.0 C562.4 373.7 564.5 372.3 566.7 372.3 C568.8 372.3 571.0 374.0 573.1 374.0 C575.2 374.0 577.4 372.4 579.5 372.3 C581.7 372.1 583.8 373.3 586.0 373.1 C588.1 373.0 590.2 372.0 592.4 371.4 C594.5 370.8 596.7 369.5 598.8 369.7 C601.0 369.8 603.1 374.0 605.3 372.3 C607.4 366.9 609.5 338.6 611.7 337.6 C613.8 336.6 616.0 361.3 618.1 366.2 C620.3 371.1 622.4 367.1 624.5 367.1 C626.7 367.1 628.8 365.8 631.0 366.2 C633.1 366.6 635.3 370.2 637.4 369.7 C639.6 369.1 641.7 362.6 643.8 362.7 C646.0 362.9 648.1 372.6 650.3 370.5 C652.4 368.5 654.6 361.4 656.7 350.6 C658.8 339.7 661.0 313.6 663.1 305.5 C665.3 297.4 667.4 291.3 669.6 302.0 C671.7 312.7 674.9 358.4 676.0 369.7 L676.0 374 L348.0 374 Z" fill="url(#ga)"/>
+<path class="line" d="M348.0 374.0 C349.1 374.0 352.3 374.0 354.4 374.0 C356.6 374.0 358.7 374.0 360.9 374.0 C363.0 374.0 365.2 374.0 367.3 374.0 C369.4 374.0 371.6 374.0 373.7 374.0 C375.9 374.0 378.0 374.0 380.2 374.0 C382.3 374.0 384.4 374.0 386.6 374.0 C388.7 374.0 390.9 374.0 393.0 374.0 C395.2 374.0 397.3 374.0 399.5 374.0 C401.6 374.0 403.7 374.0 405.9 374.0 C408.0 374.0 410.2 374.0 412.3 374.0 C414.5 374.0 416.6 374.0 418.7 374.0 C420.9 374.0 423.0 374.0 425.2 374.0 C427.3 374.0 429.5 374.0 431.6 374.0 C433.8 374.0 435.9 374.0 438.0 374.0 C440.2 374.0 442.3 374.0 444.5 374.0 C446.6 374.0 448.8 374.0 450.9 374.0 C453.0 374.0 455.2 374.0 457.3 374.0 C459.5 374.0 461.6 374.0 463.8 374.0 C465.9 374.0 468.1 374.0 470.2 374.0 C472.3 374.0 474.5 374.0 476.6 374.0 C478.8 374.0 480.9 374.0 483.1 374.0 C485.2 374.0 487.3 374.0 489.5 374.0 C491.6 374.0 493.8 374.0 495.9 374.0 C498.1 374.0 500.2 374.0 502.4 374.0 C504.5 373.4 506.6 370.5 508.8 370.5 C510.9 370.5 513.1 373.6 515.2 374.0 C517.4 374.0 519.5 373.6 521.6 373.1 C523.8 372.7 525.9 371.4 528.1 371.4 C530.2 371.4 532.4 372.7 534.5 373.1 C536.7 373.6 538.8 373.9 540.9 374.0 C543.1 374.0 545.2 374.0 547.4 374.0 C549.5 374.0 551.7 374.0 553.8 374.0 C555.9 374.0 558.1 374.0 560.2 374.0 C562.4 373.7 564.5 372.3 566.7 372.3 C568.8 372.3 571.0 374.0 573.1 374.0 C575.2 374.0 577.4 372.4 579.5 372.3 C581.7 372.1 583.8 373.3 586.0 373.1 C588.1 373.0 590.2 372.0 592.4 371.4 C594.5 370.8 596.7 369.5 598.8 369.7 C601.0 369.8 603.1 374.0 605.3 372.3 C607.4 366.9 609.5 338.6 611.7 337.6 C613.8 336.6 616.0 361.3 618.1 366.2 C620.3 371.1 622.4 367.1 624.5 367.1 C626.7 367.1 628.8 365.8 631.0 366.2 C633.1 366.6 635.3 370.2 637.4 369.7 C639.6 369.1 641.7 362.6 643.8 362.7 C646.0 362.9 648.1 372.6 650.3 370.5 C652.4 368.5 654.6 361.4 656.7 350.6 C658.8 339.7 661.0 313.6 663.1 305.5 C665.3 297.4 667.4 291.3 669.6 302.0 C671.7 312.7 674.9 358.4 676.0 369.7" pathLength="1" fill="none" stroke="#1a7f37" stroke-width="2" stroke-linejoin="round"/>
+<circle class="pulse" cx="676.0" cy="369.7" r="4" fill="#1a7f37"/>
+<circle cx="676.0" cy="369.7" r="3" fill="#1a7f37" stroke="#fff" stroke-width="1.5"/>
+<text x="348" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="start">nov</text>
+<text x="380.157" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">jan</text>
+<text x="405.882" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">fev</text>
+<text x="431.608" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">mar</text>
+<text x="463.765" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">abr</text>
+<text x="489.49" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">mai</text>
+<text x="521.647" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">jun</text>
+<text x="547.373" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">jul</text>
+<text x="573.098" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">ago</text>
+<text x="605.255" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">set</text>
+<text x="630.98" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">out</text>
+<text x="656.706" y="389" font-size="10.5" fill="#656d76" font-weight="400" text-anchor="middle">nov</text>
+</g>
+<text x="24" y="406" font-size="10.5" fill="#8c959f" font-weight="400" text-anchor="start">Atualizado em 28/11/2026 · America/Sao_Paulo</text>
+</svg>
